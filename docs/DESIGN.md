@@ -51,13 +51,13 @@ patterns it contains.
 
 ## Two things that are not rules
 
-**`clean` / `finalize`** (`text.py`) rewrite the whole string rather than one span, so
+**`clean` / `finalize`** (`text.rs`) rewrite the whole string rather than one span, so
 they run before and after the scan. `clean` does NFC, strips zero-width and bidi
 controls, and canonicalises ASCII `"` and `'` between Hebrew letters into `״` and `׳` —
 which is why every rule can match one spelling instead of four. `finalize` collapses the
 spacing the rules left behind.
 
-**`strip_markdown`** (`rules/cleanup/`) is a pre-pass for the same reason. It drops
+**`strip_markdown`** (`rules/cleanup.rs`) is a pre-pass for the same reason. It drops
 syntax and keeps text, discards fenced code blocks outright, and leaves the punctuation
 that shapes prosody.
 
@@ -101,12 +101,12 @@ is left.
 
 `numerals/` is where the Hebrew lives, and it is the only part that is genuinely hard.
 
-```python
-numeral(n, gender=FEM, *, construct=False)   # שלושה / שלוש / שלושת
-decimal(whole, frac, cfg, gender=FEM)        # 3.5 -> שלוש נקודה חמש
-digits(s)                                    # "050" -> אפס חמש אפס
-ordinal(n, gender=FEM, *, definite=False)    # השלישית
-count_phrase(n, noun, cfg)                   # numeral + noun, agreeing
+```rust
+numeral(n, gender, construct)        // שלושה / שלוש / שלושת
+decimal(whole, frac, cfg, gender)    // 3.5 -> שלוש נקודה חמש
+digits(s)                            // "050" -> אפס חמש אפס
+ordinal(n, gender, definite)         // השלישית
+count_phrase(n, noun, cfg)           // numeral + noun, agreeing
 noun_gender(word, cfg)
 ```
 
@@ -143,9 +143,11 @@ on purpose.
 
 ## Testing
 
-Cases live in TSVs under `tests/data/`, one row per case: `input`, `expected`, the
-`config` it applies to, and a `note`. A typo in the config column raises rather than
-silently testing the defaults.
+Cases live in TSVs under `crates/heb-tts-normalizer/tests/data/`, one row per case:
+`input`, `expected`, the `config` it applies to, and a `note`. A typo in the config
+column fails the test naming `file:line`, rather than silently testing the defaults.
+They live inside the crate so it is self-contained and publishable — at the repo root,
+`cargo publish` would ship a crate whose own tests could not run.
 
 Every row runs through the full public `normalize()`, which is what catches one rule
 stealing another's text — a dates pattern that starts claiming `14:30` fails here and
@@ -153,11 +155,47 @@ nowhere else. On top of that, every row is checked for idempotence and for digit
 niqqud surviving into the output, and `tests/data/passthrough.tsv` asserts the things
 that must come back byte-identical.
 
-`tests/test_scanner.py` tests the scanner against fake rules only, so the machinery is
-verified independently of any Hebrew.
+`tests/scanner.rs` tests the scanner against fake rules only, so the machinery is
+verified independently of any Hebrew — including the multi-byte cases that only matter in
+Rust: a decline must advance a whole character rather than a byte, and the skip-ahead must
+land on a char boundary.
 
 ## Adding a rule
 
-Add a folder under `rules/` with the pattern, its lexicon, and nothing else; export
-`RULES`; add it to the registry in `rules/__init__.py`. `examples/custom_rule.py` does it
-from outside the package, without a fork.
+Add a module under `src/rules/` with the pattern, its lexicon, and nothing else; expose
+`pub fn rules() -> Vec<Box<dyn Rule>>`; add it to the registry in `rules/mod.rs`.
+`examples/custom_rule.rs` does it from outside the crate, without a fork.
+
+## The port, and what it cost
+
+The library began as Python; that implementation is in the history at `a31cd38`, and its
+corpus is why the Rust port is verifiable rather than a reinterpretation — every rule was
+checked row-for-row against it before the Python was deleted.
+
+Two things the port forced:
+
+- **`fancy-regex`, not `regex`.** RE2 — the `regex` crate, and Go's `regexp` — has no
+  lookaround at all, and the rules lean on it constantly. `fancy-regex` keeps the patterns
+  identical to the originals. It costs binary size and speed, and it is why the wasm is
+  1.2 MiB and `normalize` runs at ~6 µs/char. Converting the lookarounds into explicit
+  position checks in `render` would let us drop to `regex`; the scanner already hands each
+  rule the full text and its offset, so the door is open.
+- **A match cache in the scanner.** Asking 28 rules for a match at every position, when
+  each search scans forward through the remaining text, is quadratic — it measured 820 µs
+  on a 19-character string. The text is immutable, so a rule's leftmost match from `pos`
+  stays its leftmost match until `pos` passes it; caching that made it linear.
+
+## Bindings
+
+One core, three surfaces. Config crosses every boundary as the same JSON object, so
+there is a single config representation for the whole project rather than one per binding.
+
+- **C ABI** — an opaque handle (regex construction is amortised across calls), a
+  JSON config string rather than a struct (a struct makes every added option a silent ABI
+  break), and a mandatory `heb_string_free`, because a caller must never `free()` a Rust
+  allocation.
+- **Python** — ctypes over that ABI. `heb_normalize`'s `restype` is `c_void_p`, not
+  `c_char_p`: ctypes converts a `c_char_p` result to `bytes` and throws the address away,
+  which would leak on every call.
+- **wasm** — `web` and `nodejs` builds behind an `exports` map. Init is async in the
+  browser and the API says so, rather than pretending otherwise.

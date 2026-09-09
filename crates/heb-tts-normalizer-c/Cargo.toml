@@ -1,0 +1,19 @@
+[package]
+name = "heb-tts-normalizer-c"
+description = "C ABI for heb-tts-normalizer: Hebrew text normalization for TTS."
+keywords = ["hebrew", "tts", "text-normalization", "ffi"]
+categories = ["text-processing", "external-ffi-bindings"]
+readme = "../../README.md"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[lib]
+name = "heb_tts_normalizer_c"
+crate-type = ["cdylib", "staticlib", "rlib"]
+
+[dependencies]
+heb-tts-normalizer.workspace = true

@@ -8,30 +8,80 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  CARGO_TERM_COLOR: always
+
 jobs:
-  check:
+  # The real test suite: the TSV corpus and the scanner machinery.
+  rust:
+    name: Rust
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up uv
-        uses: astral-sh/setup-uv@v5
+      - uses: dtolnay/rust-toolchain@stable
         with:
-          python-version: "3.13"
-          enable-cache: true
-          cache-dependency-glob: "uv.lock"
+          components: rustfmt, clippy
 
-      - name: Install dependencies
-        run: uv sync --locked
+      - uses: Swatinem/rust-cache@v2
 
-      - name: Format
-        run: uv run ruff format --check .
+      - uses: getchore/setup-chore@v1
 
       - name: Lint
-        run: uv run ruff check .
-
-      - name: Type check
-        run: uv run ty check
+        run: chore lint
 
       - name: Test
-        run: uv run pytest
+        run: chore test
+
+      - name: Examples
+        run: chore examples
+
+  # Smoke tests only. Conformance is the Rust corpus's job; what can break here is
+  # the plumbing across the C ABI.
+  python:
+    name: Python binding
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.13"
+
+      - uses: getchore/setup-chore@v1
+
+      - name: Smoke test
+        run: chore py-test
+
+  typescript:
+    name: TypeScript binding
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+
+      - uses: jetli/wasm-pack-action@v0.4.0
+        with:
+          version: latest
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          cache-dependency-path: bindings/typescript/pnpm-lock.yaml
+
+      - uses: getchore/setup-chore@v1
+
+      - name: Smoke test
+        run: chore ts-test

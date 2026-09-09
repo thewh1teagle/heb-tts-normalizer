@@ -1,0 +1,19 @@
+[package]
+name = "heb-tts-normalizer"
+description = "Normalize Hebrew text for TTS: numbers, currency, dates, times and units become spoken words, ready for g2p."
+keywords = ["hebrew", "tts", "text-normalization", "g2p"]
+categories = ["text-processing", "internationalization"]
+readme = "../../README.md"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[dependencies]
+fancy-regex.workspace = true
+once_cell.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+unicode-normalization.workspace = true

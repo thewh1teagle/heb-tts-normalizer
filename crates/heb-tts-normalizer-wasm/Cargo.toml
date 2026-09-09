@@ -1,0 +1,39 @@
+[package]
+name = "heb-tts-normalizer-wasm"
+description = "WebAssembly bindings for heb-tts-normalizer: Hebrew text normalization for TTS."
+keywords = ["hebrew", "tts", "text-normalization", "wasm"]
+categories = ["text-processing", "wasm"]
+readme = "../../bindings/typescript/README.md"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[lib]
+name = "heb_tts_normalizer_wasm"
+crate-type = ["cdylib", "rlib"]
+
+# wasm-pack runs `wasm-opt -O` with no feature flags, which rejects the bulk-memory
+# instructions rustc now emits by default. Spell the features out, and optimize for size
+# to match the workspace release profile.
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = [
+    "-Oz",
+    "--enable-bulk-memory",
+    "--enable-bulk-memory-opt",
+    "--enable-nontrapping-float-to-int",
+    "--enable-sign-ext",
+    "--enable-mutable-globals",
+    "--enable-reference-types",
+    "--enable-multivalue",
+]
+
+[features]
+default = ["console_error_panic_hook"]
+
+[dependencies]
+heb-tts-normalizer.workspace = true
+wasm-bindgen = "0.2"
+console_error_panic_hook = { version = "0.1", optional = true }

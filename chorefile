@@ -1,0 +1,123 @@
+require 1.9.0
+
+repo=thewh1teagle/heb-tts-normalizer
+
+# Every C-ABI target the release workflow publishes. `bundle` turns each into one
+# wheel; scripts/build_wheels.py holds the target -> platform-tag mapping.
+c_targets="x86_64-unknown-linux-gnu x86_64-unknown-linux-musl aarch64-unknown-linux-gnu x86_64-apple-darwin aarch64-apple-darwin x86_64-pc-windows-msvc"
+
+# Build the whole workspace in release mode.
+task build {
+    cargo build --workspace --release
+}
+
+# Run the Rust tests: the TSV corpus and the scanner machinery.
+#
+# The corpus is the spec — every TSV row through the public normalize(), plus
+# idempotence, no-digits and no-niqqud on every one of them.
+task test {
+    cargo test --workspace
+}
+
+# Format the Rust sources in place.
+task fmt {
+    cargo fmt --all
+}
+
+# Check formatting and run clippy with warnings as errors.
+task lint {
+    cargo fmt --all -- --check
+    cargo clippy --workspace --all-targets -- -D warnings
+}
+
+# Everything CI runs on the Rust side: lint then test.
+task check {
+    lint
+    test
+}
+
+# Build the WebAssembly package for both the browser and Node.
+#
+# Output lands in bindings/typescript/pkg, which the TypeScript package ships.
+task wasm {
+    wasm-pack build "$ROOT/crates/heb-tts-normalizer-wasm" --release --target web --out-dir "$ROOT/bindings/typescript/pkg/web" --out-name heb_tts_normalizer_wasm
+    wasm-pack build "$ROOT/crates/heb-tts-normalizer-wasm" --release --target nodejs --out-dir "$ROOT/bindings/typescript/pkg/node" --out-name heb_tts_normalizer_wasm
+    # wasm-pack writes a .gitignore and a README into its out-dir; neither belongs in
+    # the published package.
+    remove "$ROOT/bindings/typescript/pkg/web/.gitignore" "$ROOT/bindings/typescript/pkg/web/README.md"
+    remove "$ROOT/bindings/typescript/pkg/node/.gitignore" "$ROOT/bindings/typescript/pkg/node/README.md"
+}
+
+# Build the C ABI as a cdylib and a staticlib.
+#
+# The Python binding finds the result under target/release, so this is what `py-test`
+# needs before it can load anything.
+task c {
+    cargo build -p heb-tts-normalizer-c --release
+}
+
+# Smoke-test the Python ctypes binding against a locally built C library.
+task py-test {
+    c
+    cd "$ROOT/bindings/python"
+    uv run pytest
+}
+
+# Smoke-test the TypeScript package against a locally built wasm module.
+task ts-test {
+    wasm
+    cd "$ROOT/bindings/typescript"
+    pnpm install --frozen-lockfile
+    pnpm run build:ts
+    pnpm test
+}
+
+# Run all three Rust examples, so a broken one fails loudly rather than rotting.
+task examples {
+    cargo run -p heb-tts-normalizer --example basic
+    cargo run -p heb-tts-normalizer --example reading_style
+    cargo run -p heb-tts-normalizer --example custom_rule
+}
+
+# Fetch a released version's CI-built artifacts and pack wheels into dist/, publishing nothing.
+#
+# Downloads the assets the release workflow built for tag v<version>, verifies them
+# against SHA256SUMS, unpacks each platform library into the Python package and builds
+# one wheel per platform. The wasm package is unpacked into bindings/typescript/pkg so
+# `publish` ships exactly what CI built rather than a local rebuild. Inspect dist/,
+# then run `chore publish`.
+task bundle version {
+    stage="$ROOT/build/release/v$1"
+    remove "$stage" "$ROOT/dist"
+    mkdir "$stage" "$ROOT/dist"
+
+    download "gh://$repo/v$1/SHA256SUMS" "$stage/"
+    for t in $c_targets {
+        download "gh://$repo/v$1/heb-tts-normalizer-c-$t.tar.gz" "$stage/"
+    }
+    download "gh://$repo/v$1/heb-tts-normalizer-wasm.tar.gz" "$stage/"
+
+    uv run "$ROOT/scripts/build_wheels.py" --version "$1" --stage "$stage" --out "$ROOT/dist"
+
+    remove "$ROOT/bindings/typescript/pkg" "$ROOT/bindings/typescript/dist"
+    extract "$stage/heb-tts-normalizer-wasm.tar.gz" "$ROOT/bindings/typescript"
+
+    echo "wheels in dist/ — inspect them, then: chore publish"
+}
+
+# Upload what `bundle` left in dist/ to PyPI and npm — this ships for real.
+#
+# Deliberately separate from `bundle`: a mistyped or repeated bundle run can never push
+# anything, and dist/ can be inspected first. Nothing is built here — the bytes
+# uploaded are the ones CI produced.
+task publish {
+    if !exists "$ROOT/dist" {
+        fail "no dist/ — run: chore bundle <version>"
+    }
+    uv run --with twine twine upload $(find "$ROOT/dist" *.whl)
+
+    cd "$ROOT/bindings/typescript"
+    # --ignore-scripts so prepublishOnly cannot quietly rebuild the wasm that bundle
+    # just fetched from the release.
+    pnpm publish --access public --no-git-checks --ignore-scripts
+}

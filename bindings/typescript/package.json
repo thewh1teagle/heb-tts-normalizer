@@ -1,0 +1,55 @@
+{
+  "name": "heb-tts-normalizer",
+  "version": "0.2.0",
+  "description": "Normalize Hebrew text for TTS: numbers, currency, dates, times and units become spoken words, ready for g2p.",
+  "keywords": [
+    "hebrew",
+    "tts",
+    "text-normalization",
+    "g2p",
+    "wasm"
+  ],
+  "license": "MIT",
+  "author": "thewh1teagle",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thewh1teagle/heb-tts-normalizer.git",
+    "directory": "bindings/typescript"
+  },
+  "homepage": "https://github.com/thewh1teagle/heb-tts-normalizer#readme",
+  "type": "module",
+  "sideEffects": [
+    "./dist/node.js"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "node": "./dist/node.js",
+      "browser": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "pkg/web",
+    "pkg/node",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build:wasm": "wasm-pack build ../../crates/heb-tts-normalizer-wasm --release --target web --out-dir ../../bindings/typescript/pkg/web --out-name heb_tts_normalizer_wasm && wasm-pack build ../../crates/heb-tts-normalizer-wasm --release --target nodejs --out-dir ../../bindings/typescript/pkg/node --out-name heb_tts_normalizer_wasm && pnpm run build:wasm:tidy",
+    "build:wasm:tidy": "rm -f pkg/web/.gitignore pkg/node/.gitignore pkg/web/README.md pkg/node/README.md",
+    "build:ts": "tsc -p tsconfig.json",
+    "build": "pnpm run build:wasm && pnpm run build:ts",
+    "test": "vitest run",
+    "prepublishOnly": "pnpm run build"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.0"
+  }
+}
