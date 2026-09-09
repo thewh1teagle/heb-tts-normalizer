@@ -1,34 +1,43 @@
 input	expected	config	note
 # Hebrew-calendar dates. The month is required: a bare "כ״ז" is indistinguishable from
 # a gershayim acronym, and the abbreviations rule has the better claim on it.
-כ״ז אלול	עשרים ושבעה באלול		month without the preposition
-כ״ז באלול	עשרים ושבעה באלול		month with it
-א׳ בתשרי	אחד בתשרי		single letter + geresh — was read "אלף בתשרי" before this rule
-ב׳ בתשרי	שניים בתשרי		
-ט׳ באב	תשעה באב		the cardinal already is the name
-י׳ בטבת	עשרה בטבת		
-י״א בניסן	אחד עשר בניסן		
-י״ד בתשרי	ארבעה עשר בתשרי		
-ט״ז בסיוון	שישה עשר בסיוון		ט״ז avoids spelling the Name
-י״ז בתמוז	שבעה עשר בתמוז		
-כ׳ באייר	עשרים באייר		
-כ״ז בכסלו	עשרים ושבעה בכסלו		
-כ״ט באלול	עשרים ותשעה באלול		
-ל׳ בחשוון	שלושים בחשוון		last possible day
-# Defective spellings that turn up in real text
-כ״ז בחשון	עשרים ושבעה בחשוון		חשון -> חשוון
-כ״ז בכסליו	עשרים ושבעה בכסלו		
-כ״ז בסיון	עשרים ושבעה בסיוון		
-# Lexicalised names: the date is a word, not a reading
-ט״ו בשבט	טו בשבט		/tu bishvat/, not חמישה עשר בשבט
+#
+# The default is letter names, which is how a Hebrew date is actually said —
+# ה׳ באייר is /hei be-iyar/, not חמישה באייר. hebrew_date_style=numbers switches it.
+כ״ז אלול	כף זין באלול		month without the preposition
+כ״ז באלול	כף זין באלול		month with it
+כ״ז באלול	עשרים ושבעה באלול	hebrew_date_style=numbers	the other style
+א׳ בתשרי	אלף בתשרי		single letter + geresh — was read "אלף בתשרי" by the abbrev rule for the wrong reason
+א׳ בתשרי	אחד בתשרי	hebrew_date_style=numbers	
+ה׳ באייר	הא באייר		Independence Day, universally /hei be-iyar/
+ה׳ באייר	חמישה באייר	hebrew_date_style=numbers	
+י״א בניסן	יוד אלף בניסן		
+י״ד בתשרי	יוד דלת בתשרי		
+ט״ז בסיוון	טית זין בסיוון		ט״ז avoids spelling the Name
+כ׳ באייר	כף באייר		
+כ״ז בכסלו	כף זין בכסלו		
+כ״ט באלול	כף טית באלול		
+ל׳ בחשוון	למד בחשוון		last possible day
+ל׳ בחשוון	שלושים בחשוון	hebrew_date_style=numbers	
+# Fixed names beat both styles — these are names, not readings
+ט״ו בשבט	טו בשבט		/tu bishvat/
+ט״ו בשבט	טו בשבט	hebrew_date_style=numbers	the name wins over the style
 ט״ו באב	טו באב		
 ל״ג בעומר	לג בעומר		the Omer counts days but is not a month
+ט׳ באב	תשעה באב		a fast day is lexicalised as a numeral, never "טית באב"
+ט׳ באב	תשעה באב	hebrew_date_style=numbers	
+י׳ בטבת	עשרה בטבת		
+י״ז בתמוז	שבעה עשר בתמוז		
+# Defective spellings that turn up in real text
+כ״ז בחשון	כף זין בחשוון		חשון -> חשוון
+כ״ז בכסליו	כף זין בכסלו		
+כ״ז בסיון	כף זין בסיוון		
 # Years are said as words
-י״ד בתשרי תשפ״ו	ארבעה עשר בתשרי תשפו		
-א׳ בניסן ה׳תשפ״ו	אחד בניסן התשפו		with the millennium
+י״ד בתשרי תשפ״ו	יוד דלת בתשרי תשפו		
+א׳ בניסן ה׳תשפ״ו	אלף בניסן התשפו		with the millennium
 # Inside a sentence
-החג חל ב-כ״ז באלול השנה	החג חל ב-עשרים ושבעה באלול השנה		
-נולדתי ט״ז בשבט	נולדתי שישה עשר בשבט		ט״ז is not the ט״ו holiday
+החג חל ב-כ״ז באלול השנה	החג חל ב-כף זין באלול השנה		
+נולדתי ט״ז בשבט	נולדתי טית זין בשבט		ט״ז is not the ט״ו holiday
 # Left alone: acronyms and holiday names are not dates
 צה״ל	צהל		read-as-word acronym, untouched by this rule
 ד״ר כהן	דוקטור כהן		abbreviation, untouched

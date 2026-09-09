@@ -101,13 +101,41 @@ GEMATRIA: dict[str, int] = {
 #: speaker; spelling it out as חמישה עשר בשבט is correct and wrong at the same time.
 #: (day, month) -> what to say. Note ט׳ באב needs no entry: תשעה באב IS the cardinal.
 HEBREW_DATE_NAMES: dict[tuple[int, str], str] = {
+    # Read as a word.
     (15, "שבט"): "טו בשבט",
     (15, "אב"): "טו באב",
     (33, "עומר"): "לג בעומר",
+    # Read as a number. These are the exceptions to the letter-name default: the fast
+    # days are lexicalised as numerals, and "טית באב" is not a thing anyone says.
+    (9, "אב"): "תשעה באב",
+    (10, "טבת"): "עשרה בטבת",
+    (17, "תמוז"): "שבעה עשר בתמוז",
 }
 
 #: Not a month, but it counts days the same way and appears in the same shape.
 OMER = "עומר"
+
+#: Letter names, for reading a Hebrew date the way it is actually said: כ״ז באלול is
+#: "כף זין באלול", not "עשרים ושבעה באלול". Only א-ל can appear in a day (1-30).
+LETTER_NAMES: dict[str, str] = {
+    "א": "אלף",
+    "ב": "בית",
+    "ג": "גימל",
+    "ד": "דלת",
+    "ה": "הא",
+    "ו": "וו",
+    "ז": "זין",
+    "ח": "חית",
+    "ט": "טית",
+    "י": "יוד",
+    "כ": "כף",
+    "ל": "למד",
+}
+
+
+def letter_names(numeral: str) -> str:
+    """Spell a Hebrew numeral out as its letter names, dropping geresh/gershayim."""
+    return " ".join(LETTER_NAMES[ch] for ch in numeral if ch in LETTER_NAMES)
 
 
 def gematria(letters: str) -> int:
@@ -135,6 +163,7 @@ __all__ = [
     "HEBREW_DATE_NAMES",
     "HEBREW_MONTHS",
     "HEBREW_MONTH_VARIANTS",
+    "LETTER_NAMES",
     "MONTHS",
     "MONTH_NUMBERS",
     "OMER",
@@ -142,4 +171,5 @@ __all__ = [
     "SABBATH_COMPOUNDS",
     "WEEKDAYS",
     "gematria",
+    "letter_names",
 ]

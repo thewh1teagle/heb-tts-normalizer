@@ -1,6 +1,6 @@
 """Normalize Hebrew text for TTS, so a g2p only ever sees words."""
 
-from .config import Clock, Config, DateOrder, Gender
+from .config import Clock, Config, DateOrder, Gender, HebrewDateStyle
 from .rules import ALL_RULES
 from .scanner import PRIORITY, Rule, normalize, scan
 
@@ -11,6 +11,7 @@ __all__ = [
     "Config",
     "DateOrder",
     "Gender",
+    "HebrewDateStyle",
     "Rule",
     "normalize",
     "scan",

@@ -36,7 +36,7 @@ normalize("המחיר 25.50 ₪")  # המחיר עשרים וחמישה שקלי
 | Percent | `12%` | שנים עשר אחוזים |
 | Decimals | `3.5` | שלוש נקודה חמש |
 | Dates | `12/03/2026` | שנים עשר במרץ אלפיים עשרים ושש |
-| Hebrew-calendar dates | `כ״ז באלול` · `ט״ו בשבט` | עשרים ושבעה באלול · טו בשבט |
+| Hebrew-calendar dates | `כ״ז באלול` · `ט״ו בשבט` | כף זין באלול · טו בשבט |
 | Times | `14:30` | שתיים וחצי אחר הצהריים |
 | Units | `5 ק״מ` | חמישה קילומטרים |
 | Ranges and signs | `3–5` · `-5` | שלוש עד חמש · מינוס חמש |
@@ -62,6 +62,7 @@ normalize("14:30", Config(clock=Clock.H24))  # ארבע עשרה שלושים
 |---|---|---|
 | `clock` | `H12` | `14:30` as שתיים וחצי or ארבע עשרה שלושים |
 | `date_order` | `DMY` | how to read `03/04/2026` |
+| `hebrew_date_style` | `LETTERS` | `כ״ז באלול` as כף זין or עשרים ושבעה |
 | `read_minor_currency` | `True` | agorot and cents |
 | `expand_units` | `True` | `ק״מ` → קילומטרים |
 | `expand_abbreviations` | `True` | `ד״ר` → דוקטור |

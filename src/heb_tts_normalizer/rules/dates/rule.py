@@ -31,7 +31,7 @@ from datetime import date
 
 import regex as re
 
-from ...config import Config, DateOrder, Gender
+from ...config import Config, DateOrder, Gender, HebrewDateStyle
 from ...numerals import numeral, ordinal
 from ...scanner import PRIORITY
 from .data import (
@@ -42,6 +42,7 @@ from .data import (
     MONTHS,
     OMER,
     gematria,
+    letter_names,
 )
 
 #: Longest first, so "מרץ" cannot shadow a longer spelling that starts the same way.
@@ -200,9 +201,16 @@ class HebrewDateRule:
         if not 1 <= day <= limit:
             return m[0]  # numeral-shaped but not a day: leave it alone
 
-        named = HEBREW_DATE_NAMES.get((day, month))
-        # The day of a Hebrew month is masculine, as with a Gregorian date.
-        spoken = named or f"{numeral(day, Gender.MASC)} {m['prep'] or 'ב'}{month}"
+        prep = m["prep"] or "ב"
+        if named := HEBREW_DATE_NAMES.get((day, month)):
+            # A fixed name beats both styles: ט״ו בשבט is /tu bishvat/ and ט׳ באב is
+            # תשעה באב, whatever the config says.
+            spoken = named
+        elif cfg.hebrew_date_style is HebrewDateStyle.LETTERS:
+            spoken = f"{letter_names(m['day'])} {prep}{month}"
+        else:
+            # The day of a Hebrew month is masculine, as with a Gregorian date.
+            spoken = f"{numeral(day, Gender.MASC)} {prep}{month}"
         if m["year"]:
             # A Hebrew year is said as a word (תשפ״ו is /tashpav/), so drop the marks
             # and let the g2p read what is left.

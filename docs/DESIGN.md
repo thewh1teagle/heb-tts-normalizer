@@ -77,15 +77,19 @@ reach the g2p; the alternative is corrupting text that was already correct.
 
 ## The Hebrew calendar
 
-`כ״ז באלול` is read by gematria — *עשרים ושבעה באלול* — with the day masculine, as in a
-Gregorian date. Two things make it more than a lookup:
+`כ״ז באלול` is read by its **letter names** — *כף זין באלול* — which is how a Hebrew date
+is actually said: `ה׳ באייר` is /hei be-iyar/, not *חמישה באייר*. `hebrew_date_style`
+switches to the numeric reading. Three things make it more than a lookup:
 
 - **The month is required.** A bare `כ״ז` is indistinguishable from a gershayim acronym,
   and the abbreviations rule has the better claim on it. This also forces the rule to sit
   at `DATE` priority: below `ABBREV`, `א׳ בתשרי` was read *אלף בתשרי*.
 - **Some dates are words, not readings.** `ט״ו בשבט` is /tu bishvat/ to every speaker, so
-  spelling it out as *חמישה עשר בשבט* is correct and wrong at once. `HEBREW_DATE_NAMES`
-  holds those; `ט׳ באב` needs no entry because *תשעה באב* already is the cardinal.
+  spelling it out as *חמישה עשר בשבט* is correct and wrong at once.
+- **The fast days go the other way.** `ט׳ באב` is *תשעה באב* and `י״ז בתמוז` is
+  *שבעה עשר בתמוז* — lexicalised as numerals, never as letters. Both kinds live in
+  `HEBREW_DATE_NAMES`, and a fixed name beats whatever `hebrew_date_style` says, because
+  it is a name rather than a reading.
 
 Years are said as words (`תשפ״ו` → *תשפו*), so the marks come off and the g2p reads what
 is left.

@@ -20,6 +20,13 @@ class DateOrder(StrEnum):
     MDY = "mdy"
 
 
+class HebrewDateStyle(StrEnum):
+    """How to read the gematria in a Hebrew-calendar date."""
+
+    LETTERS = "letters"  # כ״ז באלול -> כף זין באלול, the way it is said
+    NUMBERS = "numbers"  # כ״ז באלול -> עשרים ושבעה באלול
+
+
 class Gender(StrEnum):
     """Grammatical gender of a counted noun."""
 
@@ -33,6 +40,9 @@ class Config:
 
     clock: Clock = Clock.H12
     date_order: DateOrder = DateOrder.DMY
+    #: Letter names are how a Hebrew date is normally said. Dates whose name is fixed
+    #: (תשעה באב, ט״ו בשבט) ignore this — they are names, not readings.
+    hebrew_date_style: HebrewDateStyle = HebrewDateStyle.LETTERS
 
     #: Currency assumed for a bare number that is clearly money but carries no symbol.
     default_currency: str = "ILS"
