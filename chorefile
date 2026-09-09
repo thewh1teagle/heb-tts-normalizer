@@ -143,8 +143,9 @@ task publish-pypi {
     uv run --with twine twine upload $(find "$ROOT/dist" *.whl)
 }
 
-# Publish the npm package, wasm included.
-task publish-npm {
+# Publish the npm package, wasm included. Pass a 2FA code if the account demands one:
+# `chore publish-npm 123456`. An npm Automation token needs no code.
+task publish-npm otp="" {
     if !env NODE_AUTH_TOKEN {
         fail "NODE_AUTH_TOKEN is not set — put it in .env.local (https://www.npmjs.com/settings/~/tokens)"
     }
@@ -157,9 +158,15 @@ task publish-npm {
         fail "no bindings/typescript/pkg — run: chore bundle <version>"
     }
     cd "$ROOT/bindings/typescript"
+    # An unset value expands to no word at all, so with no argument this is simply
+    # absent rather than an empty --otp=.
+    flag=
+    if $1 != "" {
+        flag="--otp=$1"
+    }
     # --ignore-scripts so prepublishOnly cannot quietly rebuild the wasm that bundle
     # just fetched from the release.
-    pnpm publish --access public --no-git-checks --ignore-scripts
+    pnpm publish --access public --no-git-checks --ignore-scripts $flag
 }
 
 # Ship to all three registries — this is for real, and cannot be undone.
