@@ -20,6 +20,9 @@ __pycache__/
 /dist
 /build
 
+# Registry tokens for `chore publish`
+.env.local
+
 # Editors / OS
 .DS_Store
 .idea/

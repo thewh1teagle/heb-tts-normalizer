@@ -1,5 +1,9 @@
 require 1.9.0
 
+# Registry tokens for the publish tasks. Optional, so every other task works without it;
+# gitignored, because it holds secrets. See .env.local.example.
+dotenv .env.local optional
+
 repo=thewh1teagle/heb-tts-normalizer
 
 # Every C-ABI target the release workflow publishes. `bundle` turns each into one
@@ -105,19 +109,55 @@ task bundle version {
     echo "wheels in dist/ — inspect them, then: chore publish"
 }
 
-# Upload what `bundle` left in dist/ to PyPI and npm — this ships for real.
+# Publish the crate to crates.io.
 #
-# Deliberately separate from `bundle`: a mistyped or repeated bundle run can never push
-# anything, and dist/ can be inspected first. Nothing is built here — the bytes
-# uploaded are the ones CI produced.
-task publish {
+# Only the core crate. heb-tts-normalizer-c and -wasm are build artifacts wearing crate
+# clothing: a crates.io user wants neither, the C consumer wants the release tarball and
+# the JS consumer wants npm. Publishing them would also mean bumping three crates in
+# lockstep forever, for a name nobody installs.
+task publish-crates {
+    if !env CARGO_REGISTRY_TOKEN {
+        fail "CARGO_REGISTRY_TOKEN is not set — put it in .env.local (see .env.local.example)"
+    }
+    cargo publish -p heb-tts-normalizer
+}
+
+# Upload the wheels `bundle` left in dist/ to PyPI.
+task publish-pypi {
+    if !env PYPI_TOKEN {
+        fail "PYPI_TOKEN is not set — put it in .env.local (see .env.local.example)"
+    }
     if !exists "$ROOT/dist" {
         fail "no dist/ — run: chore bundle <version>"
     }
+    env TWINE_USERNAME __token__
+    env TWINE_PASSWORD $env::PYPI_TOKEN
+    uv run --with twine twine check $(find "$ROOT/dist" *.whl)
     uv run --with twine twine upload $(find "$ROOT/dist" *.whl)
+}
 
+# Publish the npm package, wasm included.
+task publish-npm {
+    if !env NODE_AUTH_TOKEN {
+        fail "NODE_AUTH_TOKEN is not set — put it in .env.local (see .env.local.example)"
+    }
+    # The wasm lives in gitignored pkg/ dirs that only exist after `bundle`, so this
+    # must run from a bundled tree rather than a fresh clone.
+    if !exists "$ROOT/bindings/typescript/pkg" {
+        fail "no bindings/typescript/pkg — run: chore bundle <version>"
+    }
     cd "$ROOT/bindings/typescript"
     # --ignore-scripts so prepublishOnly cannot quietly rebuild the wasm that bundle
     # just fetched from the release.
     pnpm publish --access public --no-git-checks --ignore-scripts
+}
+
+# Ship to all three registries — this is for real, and cannot be undone.
+#
+# Split into three so a failure halfway is recoverable: no registry lets a version be
+# republished, so if npm fails after PyPI succeeded, you rerun only `publish-npm`.
+task publish {
+    publish-crates
+    publish-pypi
+    publish-npm
 }
