@@ -19,8 +19,8 @@ pip install heb-tts-normalizer   # Python, ctypes over the C ABI
 npm install heb-tts-normalizer   # TypeScript, wasm — browser and Node
 ```
 
-For C, take a `cdylib` from the [releases](../../releases) and the header from
-`crates/heb-tts-normalizer-c/include/`.
+For C, take the tarball for your platform from the [releases](../../releases): it
+carries the `cdylib`, the static library and `heb_tts_normalizer.h`.
 
 ## Use
 
