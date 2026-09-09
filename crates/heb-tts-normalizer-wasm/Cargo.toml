@@ -18,11 +18,15 @@ crate-type = ["cdylib", "rlib"]
 # wasm-pack runs `wasm-opt -O` with no feature flags, which rejects the bulk-memory
 # instructions rustc now emits by default. Spell the features out, and optimize for size
 # to match the workspace release profile.
+#
+# Only flags that BOTH a current binaryen and the older wasm-opt that wasm-pack downloads
+# on CI understand. `--enable-bulk-memory-opt` is newer than that build and makes it exit
+# with "Unknown option", failing the whole job — `--enable-bulk-memory` is what the
+# rejected instructions actually need.
 [package.metadata.wasm-pack.profile.release]
 wasm-opt = [
     "-Oz",
     "--enable-bulk-memory",
-    "--enable-bulk-memory-opt",
     "--enable-nontrapping-float-to-int",
     "--enable-sign-ext",
     "--enable-mutable-globals",
