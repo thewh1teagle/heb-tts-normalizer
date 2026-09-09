@@ -158,7 +158,9 @@ const AMOUNT: &str = r"\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?";
 
 /// Nothing numeric may touch the amount, so a malformed `1,25 ₪` is left to the
 /// number rules instead of being half-eaten here.
-const NOT_NUMBER_BEFORE: &str = r"(?<![\d,.])";
+/// `/` and `:` as well as a digit: in `151/54 מיליון דולר` the 54 is a denominator,
+/// not a sum of money, and reading it alone leaves the 151 stranded as a digit.
+const NOT_NUMBER_BEFORE: &str = r"(?<![\d,.:/])";
 
 /// Beyond this the numeral spelling is noise, not speech.
 const MAX_DIGITS: usize = 15;
