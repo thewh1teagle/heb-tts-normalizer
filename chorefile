@@ -118,7 +118,10 @@ task bundle version {
 # lockstep forever, for a name nobody installs.
 task publish-crates {
     if !env CARGO_REGISTRY_TOKEN {
-        fail "CARGO_REGISTRY_TOKEN is not set — put it in .env.local"
+        fail "CARGO_REGISTRY_TOKEN is not set — put it in .env.local (https://crates.io/settings/tokens)"
+    }
+    if $env::CARGO_REGISTRY_TOKEN == "" {
+        fail "CARGO_REGISTRY_TOKEN is empty — fill it in, in .env.local (https://crates.io/settings/tokens)"
     }
     cargo publish -p heb-tts-normalizer
 }
@@ -126,7 +129,10 @@ task publish-crates {
 # Upload the wheels `bundle` left in dist/ to PyPI.
 task publish-pypi {
     if !env PYPI_TOKEN {
-        fail "PYPI_TOKEN is not set — put it in .env.local"
+        fail "PYPI_TOKEN is not set — put it in .env.local (https://pypi.org/manage/account/token/)"
+    }
+    if $env::PYPI_TOKEN == "" {
+        fail "PYPI_TOKEN is empty — fill it in, in .env.local (https://pypi.org/manage/account/token/)"
     }
     if !exists "$ROOT/dist" {
         fail "no dist/ — run: chore bundle <version>"
@@ -140,7 +146,10 @@ task publish-pypi {
 # Publish the npm package, wasm included.
 task publish-npm {
     if !env NODE_AUTH_TOKEN {
-        fail "NODE_AUTH_TOKEN is not set — put it in .env.local"
+        fail "NODE_AUTH_TOKEN is not set — put it in .env.local (https://www.npmjs.com/settings/~/tokens)"
+    }
+    if $env::NODE_AUTH_TOKEN == "" {
+        fail "NODE_AUTH_TOKEN is empty — fill it in, in .env.local (https://www.npmjs.com/settings/~/tokens)"
     }
     # The wasm lives in gitignored pkg/ dirs that only exist after `bundle`, so this
     # must run from a bundled tree rather than a fresh clone.
