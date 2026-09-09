@@ -105,8 +105,8 @@ HEBREW_DATE_NAMES: dict[tuple[int, str], str] = {
     (15, "שבט"): "טו בשבט",
     (15, "אב"): "טו באב",
     (33, "עומר"): "לג בעומר",
-    # Read as a number. These are the exceptions to the letter-name default: the fast
-    # days are lexicalised as numerals, and "טית באב" is not a thing anyone says.
+    # Read as a number. These are the exceptions to the default: the fast days are
+    # lexicalised as numerals, so splitting them into ט׳ ב׳ would be wrong.
     (9, "אב"): "תשעה באב",
     (10, "טבת"): "עשרה בטבת",
     (17, "תמוז"): "שבעה עשר בתמוז",
@@ -115,27 +115,37 @@ HEBREW_DATE_NAMES: dict[tuple[int, str], str] = {
 #: Not a month, but it counts days the same way and appears in the same shape.
 OMER = "עומר"
 
-#: Letter names, for reading a Hebrew date the way it is actually said: כ״ז באלול is
-#: "כף זין באלול", not "עשרים ושבעה באלול". Only א-ל can appear in a day (1-30).
-LETTER_NAMES: dict[str, str] = {
-    "א": "אלף",
-    "ב": "בית",
-    "ג": "גימל",
-    "ד": "דלת",
-    "ה": "הא",
-    "ו": "וו",
-    "ז": "זין",
-    "ח": "חית",
-    "ט": "טית",
-    "י": "יוד",
-    "כ": "כף",
-    "ל": "למד",
+#: Geresh, marking a single letter used as a numeral.
+GERESH = "׳"
+
+
+def split_letters(numeral: str) -> str:
+    """Separate a Hebrew numeral into individually marked letters: כ״ז -> כ׳ ז׳.
+
+    The point is disambiguation, not pronunciation. Written with gershayim, כ״ז is
+    indistinguishable from an acronym; written as כ׳ ז׳ it is unmistakably two letters
+    read one at a time, which is what a g2p needs in order to say them.
+    """
+    return " ".join(f"{ch}{GERESH}" for ch in numeral if ch in GEMATRIA)
+
+
+#: Dates whose name is a word, not a reading. "ט״ו בשבט" is /tu bishvat/ to every
+#: speaker; spelling it out as חמישה עשר בשבט is correct and wrong at the same time.
+#: (day, month) -> what to say. Note ט׳ באב needs no entry: תשעה באב IS the cardinal.
+HEBREW_DATE_NAMES: dict[tuple[int, str], str] = {
+    # Read as a word.
+    (15, "שבט"): "טו בשבט",
+    (15, "אב"): "טו באב",
+    (33, "עומר"): "לג בעומר",
+    # Read as a number. These are the exceptions to the default: the fast days are
+    # lexicalised as numerals, so splitting them into ט׳ ב׳ would be wrong.
+    (9, "אב"): "תשעה באב",
+    (10, "טבת"): "עשרה בטבת",
+    (17, "תמוז"): "שבעה עשר בתמוז",
 }
 
-
-def letter_names(numeral: str) -> str:
-    """Spell a Hebrew numeral out as its letter names, dropping geresh/gershayim."""
-    return " ".join(LETTER_NAMES[ch] for ch in numeral if ch in LETTER_NAMES)
+#: Not a month, but it counts days the same way and appears in the same shape.
+OMER = "עומר"
 
 
 def gematria(letters: str) -> int:
@@ -163,7 +173,6 @@ __all__ = [
     "HEBREW_DATE_NAMES",
     "HEBREW_MONTHS",
     "HEBREW_MONTH_VARIANTS",
-    "LETTER_NAMES",
     "MONTHS",
     "MONTH_NUMBERS",
     "OMER",
@@ -171,5 +180,5 @@ __all__ = [
     "SABBATH_COMPOUNDS",
     "WEEKDAYS",
     "gematria",
-    "letter_names",
+    "split_letters",
 ]

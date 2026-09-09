@@ -42,7 +42,7 @@ from .data import (
     MONTHS,
     OMER,
     gematria,
-    letter_names,
+    split_letters,
 )
 
 #: Longest first, so "מרץ" cannot shadow a longer spelling that starts the same way.
@@ -207,7 +207,7 @@ class HebrewDateRule:
             # תשעה באב, whatever the config says.
             spoken = named
         elif cfg.hebrew_date_style is HebrewDateStyle.LETTERS:
-            spoken = f"{letter_names(m['day'])} {prep}{month}"
+            spoken = f"{split_letters(m['day'])} {prep}{month}"
         else:
             # The day of a Hebrew month is masculine, as with a Gregorian date.
             spoken = f"{numeral(day, Gender.MASC)} {prep}{month}"

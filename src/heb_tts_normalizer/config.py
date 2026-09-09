@@ -23,7 +23,7 @@ class DateOrder(StrEnum):
 class HebrewDateStyle(StrEnum):
     """How to read the gematria in a Hebrew-calendar date."""
 
-    LETTERS = "letters"  # כ״ז באלול -> כף זין באלול, the way it is said
+    LETTERS = "letters"  # כ״ז באלול -> כ׳ ז׳ באלול, left for the g2p to voice
     NUMBERS = "numbers"  # כ״ז באלול -> עשרים ושבעה באלול
 
 

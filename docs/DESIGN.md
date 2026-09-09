@@ -77,9 +77,12 @@ reach the g2p; the alternative is corrupting text that was already correct.
 
 ## The Hebrew calendar
 
-`כ״ז באלול` is read by its **letter names** — *כף זין באלול* — which is how a Hebrew date
-is actually said: `ה׳ באייר` is /hei be-iyar/, not *חמישה באייר*. `hebrew_date_style`
-switches to the numeric reading. Three things make it more than a lookup:
+`כ״ז באלול` becomes `כ׳ ז׳ באלול`: the numeral is split into individually marked letters
+and the voicing is left to the g2p, which is the right division of labour — a Hebrew date
+is said by its letters (`ה׳ באייר` is /hei be-iyar/, not *חמישה באייר*), and the g2p is
+where pronunciation belongs. What the normalizer owes it is the disambiguation: written
+with gershayim, `כ״ז` is indistinguishable from an acronym. `hebrew_date_style=numbers`
+reads them as a number instead. Three things make this more than a lookup:
 
 - **The month is required.** A bare `כ״ז` is indistinguishable from a gershayim acronym,
   and the abbreviations rule has the better claim on it. This also forces the rule to sit
