@@ -126,7 +126,7 @@ wasm package and attaches them to the GitHub release. Bundling and publishing ha
 locally, so no registry token ever reaches CI.
 
 ```sh
-chore bundle 0.2.0   # fetch those artifacts, verify checksums, build wheels into dist/
+chore bundle 0.1.0   # fetch those artifacts, verify checksums, build wheels into dist/
 chore publish        # upload to PyPI and npm — this ships for real
 ```
 

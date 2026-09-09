@@ -73,7 +73,7 @@ void heb_string_free(char *s);
  */
 const char *heb_last_error(void);
 
-/* The library version, e.g. "0.2.0". Static; never free it. */
+/* The library version, e.g. "0.1.0". Static; never free it. */
 const char *heb_version(void);
 
 #ifdef __cplusplus

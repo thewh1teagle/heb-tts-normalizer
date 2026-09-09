@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+
 import { describe, expect, it } from "vitest";
 
 import { configToJson } from "../src/config.js";
@@ -8,10 +10,16 @@ await init();
 /** Nothing a g2p cannot pronounce should survive normalization. */
 const DIGIT_OR_SYMBOL = /[0-9₪$€:%]/u;
 
+// Read rather than hardcoded: the wasm reports the crate version, and the point of the
+// assertion is that the npm package and the crate are released in lockstep.
+const pkgVersion = JSON.parse(
+  readFileSync(new URL("../package.json", import.meta.url), "utf8"),
+).version as string;
+
 describe("wasm loading", () => {
-  it("is ready and reports the crate version", () => {
+  it("is ready and reports the version the package claims", () => {
     expect(isReady()).toBe(true);
-    expect(version()).toBe("0.2.0");
+    expect(version()).toBe(pkgVersion);
   });
 });
 

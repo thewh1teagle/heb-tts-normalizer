@@ -44,6 +44,47 @@ pub mod priority {
     pub const NUMBER: i32 = 40;
 }
 
+/// Rules that cannot match a string containing no ASCII digit.
+///
+/// Ordinary prose has no digits, and on such text these 24 rules can only ever fail —
+/// but failing still costs a full regex search each, several over large alternations
+/// (96 unit forms, 67 abbreviations, the month tables). Skipping them outright is most
+/// of the cost of normalizing text that has nothing to normalize.
+///
+/// Listed by name rather than derived from the pattern, because a pattern *containing*
+/// `\d` may still match without one: `protect` matches a bare URL, `abbrev` matches
+/// `ד״ר`, and `date-hebrew` matches `כ״ז באלול`. Those three are deliberately absent.
+/// A rule missing from this list only loses speed; a rule wrongly on it loses
+/// correctness, so the corpus is what keeps it honest.
+const DIGIT_REQUIRED: &[&str] = &[
+    "date-numeric",
+    "date-iso",
+    "date-textual",
+    "date-month-year",
+    "time-clock",
+    "time-spoken-hour",
+    "phone-local",
+    "phone-intl",
+    "phone-service",
+    "phone-star",
+    "phone-card",
+    "phone-ip",
+    "phone-id",
+    "phone-emergency",
+    "currency-suffix",
+    "currency-prefix",
+    "percent-sign",
+    "percent-word",
+    "range",
+    "range-with-tail",
+    "unit",
+    "degree",
+    "ordinal",
+    "count",
+    "number",
+    "number-prefix",
+];
+
 /// Rewrite every span a rule claims, leaving everything else byte-identical.
 ///
 /// `rules` must already be sorted by descending priority; the registry does that once.
@@ -55,8 +96,16 @@ pub fn scan(text: &str, rules: &[Box<dyn Rule>], cfg: &Config) -> String {
     // from `pos` stays its leftmost match until `pos` passes it — searching all 28 rules
     // at every character instead costs a scan of the remaining text per rule per
     // character, which is what made this quadratic.
+    let has_digit = text.as_bytes().iter().any(u8::is_ascii_digit);
+
     let mut next: Vec<Option<Captures<'_>>> = Vec::with_capacity(rules.len());
-    for rule in rules {
+    let mut skipped = vec![false; rules.len()];
+    for (i, rule) in rules.iter().enumerate() {
+        if !has_digit && DIGIT_REQUIRED.contains(&rule.name()) {
+            skipped[i] = true;
+            next.push(None);
+            continue;
+        }
         next.push(rule.pattern().captures_from_pos(text, 0).ok().flatten());
     }
 
@@ -69,6 +118,9 @@ pub fn scan(text: &str, rules: &[Box<dyn Rule>], cfg: &Config) -> String {
         // Refresh any cached match the scan has already moved past. Separate pass:
         // `here` below borrows from `next`, so the mutation has to finish first.
         for (i, rule) in rules.iter().enumerate() {
+            if skipped[i] {
+                continue;
+            }
             if next[i]
                 .as_ref()
                 .and_then(|c| c.get(0))
