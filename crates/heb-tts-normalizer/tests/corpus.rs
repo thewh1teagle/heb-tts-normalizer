@@ -9,7 +9,6 @@
 //! carries its own provenance (file + line) because the only thing worse than a failing
 //! Hebrew assertion is a failing Hebrew assertion you cannot locate.
 
-use std::collections::BTreeMap;
 use std::fs;
 use std::path::{Path, PathBuf};
 
@@ -38,11 +37,16 @@ const STRING_KEYS: [&str; 2] = ["default_currency", "decimal_word"];
 /// `gender_overrides=סטוריז:m,ריל:f` — the one key whose value is a mapping.
 const MAP_KEYS: [&str; 1] = ["gender_overrides"];
 
-/// Rows that legitimately keep a digit in the output, keyed by `file.tsv:lineno`
-/// with the reason. Malformed input a rule declines is the usual case, and those are
-/// already covered by the passthrough skip below, so this stays empty until a row
-/// genuinely needs it.
-const DIGIT_EXEMPT: [(&str, &str); 0] = [];
+/// A note beginning with this says the row keeps a digit on purpose, and why.
+///
+/// The usual case — input a rule declines — is already covered by the passthrough skip
+/// below, where `expected` equals `input`. This is for the rest: a sentence where some
+/// rules fired and one span was declined, so the output is part words and part digits.
+/// `tests/data/opus.tsv` is full of them, since real text is full of numbers that are
+/// not quantities. The reason lives in the note beside the row rather than in a table
+/// keyed by line number, which would silently point at the wrong row the moment anyone
+/// inserted a line.
+const KEEPS_DIGIT: &str = "keeps-digit:";
 
 fn data_dir() -> PathBuf {
     PathBuf::from(concat!(env!("CARGO_MANIFEST_DIR"), "/tests/data"))
@@ -376,29 +380,35 @@ fn check_row(row: &Row, failures: &mut Vec<String>) {
         ));
     }
 
-    let exempt: BTreeMap<&str, &str> = DIGIT_EXEMPT.iter().copied().collect();
     let id = row.id();
     // A row whose expected equals its input asserts the text is left alone (a URL, a
     // filename, an unparseable date). Its digits are deliberate.
-    if row.expected != row.input && !exempt.contains_key(id.as_str()) {
+    if row.expected != row.input && !row.note.starts_with(KEEPS_DIGIT) {
         let found = digits_in(&actual);
         if !found.is_empty() {
             failures.push(format!(
                 "{id}: output still contains digits {found:?}\n  input  {}\n  actual {actual}\n  \
-                 If this row is meant to keep a digit, add it to DIGIT_EXEMPT with a reason.",
+                 If this row is meant to keep a digit, start its note with \
+                 \"keeps-digit:\" and say why.",
                 row.input
             ));
         }
     }
 
-    let niqqud = niqqud_in(&actual);
+    // Niqqud the *rules* introduced. The library does not strip the niqqud a text
+    // arrives with, and the OPUS rows do arrive with some, so the assertion is about
+    // what comes out that did not go in.
+    let niqqud: Vec<char> = niqqud_in(&actual)
+        .into_iter()
+        .filter(|c| !row.input.contains(*c))
+        .collect();
     if !niqqud.is_empty() {
         let points: Vec<String> = niqqud
             .iter()
             .map(|c| format!("U+{:04X}", *c as u32))
             .collect();
         failures.push(format!(
-            "{id}: output contains niqqud {}\n  input  {}\n  actual {actual}",
+            "{id}: output has niqqud the input did not: {}\n  input  {}\n  actual {actual}",
             points.join(", "),
             row.input
         ));
