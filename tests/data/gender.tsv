@@ -1,0 +1,77 @@
+input	expected	config	note
+3 ילדים	שלושה ילדים		masc plural
+4 ספרים	ארבעה ספרים		masc plural
+5 אנשים	חמישה אנשים		masc plural
+6 ימים	שישה ימים		masc plural
+7 חודשים	שבעה חודשים		masc plural
+8 שקלים	שמונה שקלים		masc plural
+9 בתים	תשעה בתים		masc plural
+10 חדרים	עשרה חדרים		masc plural
+3 מחשבים	שלושה מחשבים		heuristic ־ים
+5 כרטיסים	חמישה כרטיסים		heuristic ־ים
+3 ילדות	שלוש ילדות		fem plural
+4 שעות	ארבע שעות		fem plural
+5 דקות	חמש דקות		fem plural
+6 בנות	שש בנות		fem plural
+7 שאלות	שבע שאלות		heuristic ־ות
+8 תמונות	שמונה תמונות		heuristic ־ות
+9 דלתות	תשע דלתות		fem plural
+10 חנויות	עשר חנויות		fem plural
+3 נשים	שלוש נשים		fem despite ־ים
+5 שנים	חמש שנים		fem despite ־ים
+4 מילים	ארבע מילים		fem despite ־ים
+6 ביצים	שש ביצים		fem despite ־ים
+3 פעמים	שלוש פעמים		fem despite ־ים
+4 ערים	ארבע ערים		fem despite ־ים
+5 אבנים	חמש אבנים		fem despite ־ים
+2 נמלים	שתי נמלים		fem despite ־ים
+7 דבורים	שבע דבורים		fem despite ־ים
+2 עיניים	שתי עיניים		fem dual
+2 ידיים	שתי ידיים		fem dual
+3 מקומות	שלושה מקומות		masc despite ־ות
+4 שולחנות	ארבעה שולחנות		masc despite ־ות
+5 קירות	חמישה קירות		masc despite ־ות
+6 חלונות	שישה חלונות		masc despite ־ות
+7 לילות	שבעה לילות		masc despite ־ות
+8 רחובות	שמונה רחובות		masc despite ־ות
+3 שמות	שלושה שמות		masc despite ־ות
+4 קולות	ארבעה קולות		masc despite ־ות
+5 כיסאות	חמישה כיסאות		masc despite ־ות
+6 לוחות	שישה לוחות		masc despite ־ות
+7 ארונות	שבעה ארונות		masc despite ־ות
+8 חלומות	שמונה חלומות		masc despite ־ות
+3 שבועות	שלושה שבועות		masc despite ־ות
+3 הילדים	שלושת הילדים		definite masc takes the construct
+4 הספרים	ארבעת הספרים		definite masc takes the construct
+5 האנשים	חמשת האנשים		definite masc takes the construct
+10 הכיסאות	עשרת הכיסאות		definite masc takes the construct
+7 המקומות	שבעת המקומות		definite masc despite ־ות
+3 הילדות	שלוש הילדות		definite fem keeps the absolute form
+4 הבנות	ארבע הבנות		definite fem keeps the absolute form
+5 השעות	חמש השעות		definite fem keeps the absolute form
+6 הנשים	שש הנשים		definite fem despite ־ים
+2 הילדים	שני הילדים		definite dual masc
+2 הילדות	שתי הילדות		definite dual fem
+12 הילדים	שנים עשר הילדים		above ten the construct is gone
+2 ילדים	שני ילדים		2 is always bound
+2 ילדות	שתי ילדות		2 is always bound
+2 ספרים	שני ספרים		2 is always bound
+2 שעות	שתי שעות		2 is always bound
+2 מקומות	שני מקומות		2 is always bound
+2 נשים	שתי נשים		2 is always bound
+1 ילד	ילד אחד		1 follows its noun
+1 ילדה	ילדה אחת		1 follows its noun
+1 ספר	ספר אחד		1 follows its noun
+1 שאלה	שאלה אחת		1 follows its noun
+1 יום	יום אחד		1 follows its noun
+1 שנה	שנה אחת		1 follows its noun
+1 מקום	מקום אחד		1 follows its noun
+1 מילה	מילה אחת		1 follows its noun
+1 עיר	עיר אחת		fem with no fem suffix
+1 דרך	דרך אחת		fem with no fem suffix
+11 ילדים	אחד עשר ילדים		
+11 שנים	אחת עשרה שנים		
+20 ספרים	עשרים ספרים		
+21 שעות	עשרים ואחת שעות		
+100 אנשים	מאה אנשים		
+1000 מילים	אלף מילים		

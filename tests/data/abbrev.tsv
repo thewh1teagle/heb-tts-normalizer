@@ -1,0 +1,69 @@
+input	expected	config	note
+ד״ר כהן הגיע	דוקטור כהן הגיע		title expands
+ד"ר כהן	דוקטור כהן		ASCII quotes are normalised to gershayim before the rule runs
+פרופ׳ לוי	פרופסור לוי		geresh abbreviation
+גב׳ מזרחי	גברת מזרחי		Mrs.
+עו״ד רון	עורך דין רון		read as two words, not as /od/
+רו״ח שרון	רואה חשבון שרון		accountant
+יו״ר הוועדה	יושב ראש הוועדה		chairman
+ח״כ פלוני	חבר כנסת פלוני		member of Knesset
+סבא ז״ל	סבא זכרונו לברכה		of blessed memory
+רח׳ הרצל 5	רחוב הרצל חמש		street, with a number after it
+שד׳ רוטשילד	שדרות רוטשילד		boulevard
+ת״ד 45	תא דואר ארבעים וחמש		PO box
+מס׳ 7	מספר שבע		number sign
+עמ׳ 12	עמוד שתים עשרה		page
+שיאון בע״מ	שיאון בערבון מוגבל		Ltd.
+ר״ת	ראשי תיבות		initials
+ת״א	תל אביב		Tel Aviv
+בת״א	בתל אביב		attached prefix is kept and re-joined
+ארה״ב	ארצות הברית		spelled out, unlike צה״ל — nobody says /arhab/
+מארה״ב	מארצות הברית		prefix plus expansion
+בריה״מ	ברית המועצות		USSR
+א״י	ארץ ישראל		Land of Israel
+ביה״ס	בית הספר		read as words: beit ha-sefer, not as one word
+בי״ס יסודי	בית ספר יסודי		school without the article
+ביה״ח איכילוב	בית החולים איכילוב		hospital
+ביהמ״ש העליון	בית המשפט העליון		supreme court
+אחה״צ	אחר הצהריים		afternoon
+לפנה״צ	לפני הצהריים		before noon
+לפנה״ס	לפני הספירה		BCE
+אח״כ נלך	אחר כך נלך		afterwards
+תפוחים, בננות וכו׳	תפוחים, בננות וכולי		et cetera
+וגו׳	וגומר		and so forth
+ספרים וכד׳	ספרים וכדומה		and the like
+כ״א קיבל ספר	כל אחד קיבל ספר		each one
+כ״כ יפה	כל כך יפה		so much
+נכתב ע״י הרב	נכתב על ידי הרב		by
+ע״פ החוק	על פי החוק		according to
+עפ״י המקורות	על פי המקורות		same expansion, other spelling
+ע״ש הרצל	על שם הרצל		named after
+בד״כ זה עובד	בדרך כלל זה עובד		usually
+סה״כ 10	סך הכל עשר		total
+כנ״ל	כנזכר לעיל		as above
+צ״ל אחרת	צריך להיות אחרת		should read
+מו״מ מדיני	משא ומתן מדיני		negotiations
+בס״ד	בסיעתא דשמיא		with God's help
+ב״ה	ברוך השם		thank God
+סעיף א׳	סעיף אלף		single letter as an enumerator
+יום ג׳	יום גימל		day of the week
+צה״ל	צהל		lexicalised: /tsahal/, so only the gershayim go
+שירתי בצה״ל	שירתי בצהל		prefix survives the gershayim removal
+אמ״ן	אמן		military intelligence, read as a word
+שב״כ	שבכ		Shin Bet
+מד״א	מדא		Magen David Adom
+הרמטכ״ל	הרמטכל		chief of staff, with the article
+קק״ל	קקל		JNF
+תנ״ך	תנך		Tanakh
+ש״ס	שס		party name
+בג״ץ	בגץ		High Court
+המנכ״ל	המנכל		CEO — /mankal/, never spelled out
+חו״ל	חול		abroad
+דו״ח חניה	דוח חניה		parking ticket
+הרב שליט״א	הרב שליטא		looks like a formula, but is read /shlita/
+ד״ר כהן	ד״ר כהן	expand_abbreviations=false	opt-out leaves the abbreviation as written
+וכו׳	וכו׳	expand_abbreviations=false	opt-out
+צה״ל	צהל	expand_abbreviations=false	read-as-word acronyms still lose the gershayim: that is not an expansion
+ג׳ינס כחול	ג׳ינס כחול		ג׳ inside a word is not the letter gimel
+קדחת	קדחת		an ordinary word with no gershayim is untouched
+מד״ף	מד״ף		an acronym that is not in the lexicon is left alone

@@ -1,0 +1,45 @@
+# Deliberately adversarial adjacency - where cross-rule interference actually shows up.
+input	expected	config	note
+25/12/2026 בשעה 18:00 במחיר 150 ₪	עשרים וחמישה בדצמבר אלפיים עשרים ושש בשעה שש בערב במחיר מאה וחמישים שקלים		date, time and price in one breath
+3 אנשים הגיעו ב-14:30	שלושה אנשים הגיעו בשתיים וחצי אחר הצהריים		count then time
+14:30	שתיים וחצי אחר הצהריים		time is the whole string
+14:30	ארבע עשרה שלושים	clock=24	same input, 24 hour reading
+22:15	עשרים ושתיים חמש עשרה	clock=24	
+03/04/2026	שלושה באפריל אלפיים עשרים ושש		dmy default
+03/04/2026	ארבעה במרץ אלפיים עשרים ושש	date_order=mdy	same input, mdy
+התוצאה הייתה (45%) בלבד	התוצאה הייתה (ארבעים וחמישה אחוזים) בלבד		percent inside parentheses
+עלייה של (3.2%) בשנה	עלייה של (שלושה נקודה שתיים אחוזים) בשנה		decimal percent inside parentheses
+1 בתחילה ו-2 בסוף	אחת בתחילה ושתיים בסוף		number at the very start of the string
+בסוף יש 2	בסוף יש שתיים		number at the very end of the string
+7, 8	שבע, שמונה		two numbers separated only by punctuation
+3-4	שלוש עד ארבע		bare range
+3.5	שלוש נקודה חמש		bare decimal is feminine
+0	אפס		zero
+100	מאה		
+1000	אלף		
+2026	אלפיים עשרים ושש		bare year-shaped number is still a number
+050-1234567 ולא 05/01/2026	אפס חמש אפס אחת שתיים שלוש ארבע חמש שש שבע ולא חמישה בינואר אלפיים עשרים ושש		phone that opens like a date, beside a real date
+התאריך 01/02/2026 והשעה 08:00	התאריך הראשון בפברואר אלפיים עשרים ושש והשעה שמונה בבוקר		slashes and colon must not cross over
+עלה 5% ועוד 5 ₪	עלה חמישה אחוזים ועוד חמישה שקלים		same digit claimed by two rules
+3 ק״מ ב-25 דקות	שלושה קילומטרים בעשרים וחמש דקות		masc unit then fem noun
+3 ק״מ	שלוש ק״מ	expand_units=false	unit left alone, so the gender falls back
+בין 10 ל-20 אחוז	בין עשר לעשרים אחוז		אחוז already spelled out, do not double it
+1.5 ק״ג ו-2 ליטר	אחת נקודה חמש קילוגרם ושני ליטרים		decimal unit stays singular, the next one does not
+מ-1 עד 10	מאחת עד עשר		range written with prefixes
+20 ילדות ו-20 ילדים	עשרים ילדות ועשרים ילדים		a round ten does not inflect for gender
+2 ילדים	שני ילדים		
+3 הילדים	שלושת הילדים		definite noun takes the bound numeral
+ד״ר לוי הגיע ב-9:00	דוקטור לוי הגיע בתשע בבוקר		gershayim abbreviation next to a time
+15% מ-200 זה 30	חמישה עשר אחוזים ממאתיים זה שלושים		three numbers, one of them a percent
+המחיר: 99.90 ₪.	המחיר: תשעים ותשעה שקלים ותשעים אגורות.		colon before, full stop after
+$50	חמישים דולרים		symbol before the number
+€20	עשרים אירו		אירו is indeclinable
+7 באוגוסט 2026	שבעה באוגוסט אלפיים עשרים ושש		already-spelled month
+אתמול ב-16:45 ומחר ב-08:15	אתמול ברבע לחמש אחר הצהריים ומחר בשמונה ורבע בבוקר		two times, different halves of the day
+4 עד 6 שעות	ארבע עד שש שעות		range written with the word עד
+מספר 7 ברשימה	מספר שבע ברשימה		
+90% מ-1,000 איש	תשעים אחוזים מאלף איש		percent then a grouped thousand
+6 מ׳ על 4 מ׳	שישה מטרים על ארבעה מטרים		the same geresh unit twice
+עוד 10 דקות, ב-14:40	עוד עשר דקות, בשתיים וארבעים אחר הצהריים		duration then clock time
+1% ו-2% ו-3%	אחוז אחד ושני אחוזים ושלושה אחוזים		1 follows its noun, the others precede
+המשקל 70 ק״ג והגובה 1.75 מ׳	המשקל שבעים קילוגרמים והגובה אחת נקודה שבע חמש מטר		two-digit fraction read one digit at a time

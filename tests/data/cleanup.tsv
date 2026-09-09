@@ -1,0 +1,48 @@
+input	expected	config	note
+**שלום**	שלום		bold with asterisks
+__שלום__	שלום		bold with underscores
+*שלום*	שלום		italic with asterisks
+_שלום_	שלום		italic with underscores
+~~שלום~~	שלום		strikethrough
+***חשוב***	חשוב		bold and italic together
+**שלום** ו**עולם**	שלום ועולם		two emphasised spans in one line
+# כותרת ראשית	כותרת ראשית		h1 marker removed
+### כותרת קטנה	כותרת קטנה		h3 marker removed
+## כותרת ##	כותרת		closing hashes removed
+[לחצו כאן](https://example.com)	לחצו כאן		link keeps its text
+[טקסט][ref]	טקסט		reference link keeps its text
+שלום ![תמונה](img.png)	שלום		an image says nothing
+בקרו <https://example.com> שלום	בקרו שלום		autolink dropped
+`קוד`	קוד		inline code keeps its text
+הריצו `pytest` עכשיו	הריצו pytest עכשיו		inline code inside a sentence
+```הקוד כאן```			a fenced block is dropped whole
+> ציטוט חשוב	ציטוט חשוב		blockquote marker removed
+- פריט ראשון	פריט ראשון.		dash bullet, sentence boundary added
+* פריט שני	פריט שני.		asterisk bullet
++ פריט שלישי	פריט שלישי.		plus bullet
+1. פריט ראשון	פריט ראשון.		ordered list marker
+2) פריט שני	פריט שני.		ordered list with a paren
+- פריט אחרון.	פריט אחרון.		already punctuated, no extra stop
+| שם | טלפון |	שם, טלפון.		table row collapses to cell text
+| דני | 050-1234567 |	דני, אפס חמש אפס אחת שתיים שלוש ארבע חמש שש שבע.		table cells still normalize
+שלום, מה שלומך?	שלום, מה שלומך?		prosodic punctuation untouched
+אמרתי: כן; לא!	אמרתי: כן; לא!		colon, semicolon and bang untouched
+הוא אמר ״שלום״ ויצא	הוא אמר ״שלום״ ויצא		gershayim untouched
+ג׳ירפה אכלה צ׳יפס	ג׳ירפה אכלה צ׳יפס		geresh untouched
+**ג׳ירפה**	ג׳ירפה		emphasis around a geresh word
+זה כוכב * בודד	זה כוכב * בודד		a lone asterisk is not markup
+קו_תחתון בודד	קו_תחתון בודד		a lone underscore is not markup
+\*לא הדגשה\*	לא הדגשה		an escaped asterisk is dropped: it says nothing aloud and restoring it is not idempotent
+**3 ילדים**	שלושה ילדים		markdown and numbers compose
+יש לי [2 ילדים](https://x.com)	יש לי שני ילדים		link text is still normalized
+# יש 5 סיבות	יש חמש סיבות		heading text is still normalized
+- שלם 25₪	שלם עשרים וחמישה שקלים.		bullet with currency
+**050-1234567**	אפס חמש אפס אחת שתיים שלוש ארבע חמש שש שבע		bold phone number
+## הטלפון: 052-9876543	הטלפון: אפס חמש שתיים תשע שמונה שבע שש חמש ארבע שלוש		heading with a phone number
+[התקשרו](tel:0501234567) 03-1234567	התקשרו אפס שלוש אחת שתיים שלוש ארבע חמש שש שבע		link text plus a phone number
+> חייגו *6555	חייגו כוכבית שש חמש חמש חמש		quoted star number survives the italic pass
+~~*6555~~	כוכבית שש חמש חמש חמש		star number inside strikethrough
+1. חייגו 1-800-123-456	חייגו אחת שמונה אפס אפס אחת שתיים שלוש ארבע חמש שש.		list item with a service number
+**14:30**	ארבע עשרה שלושים	clock=24	bold time, 24 hour clock
+**14:30**	שתיים וחצי אחר הצהריים	clock=12	bold time, 12 hour clock
+_192.168.1.1_	אחת תשע שתיים נקודה אחת שש שמונה נקודה אחת נקודה אחת		italic IP address

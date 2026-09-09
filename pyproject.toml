@@ -1,0 +1,50 @@
+[project]
+name = "heb-tts-normalizer"
+version = "0.1.0"
+description = "Normalize Hebrew text for TTS: numbers, currency, dates, times and units become spoken words, ready for g2p."
+readme = "README.md"
+requires-python = ">=3.13"
+license = "MIT"
+keywords = ["hebrew", "tts", "text-normalization", "g2p", "itn"]
+authors = [
+    { name = "thewh1teagle", email = "61390950+thewh1teagle@users.noreply.github.com" }
+]
+classifiers = [
+    "Programming Language :: Python :: 3.13",
+    "Natural Language :: Hebrew",
+    "Topic :: Text Processing :: Linguistic",
+]
+dependencies = [
+    "regex>=2026.9.3",
+]
+
+[project.urls]
+Homepage = "https://github.com/thewh1teagle/heb-tts-normalizer"
+Issues = "https://github.com/thewh1teagle/heb-tts-normalizer/issues"
+
+[build-system]
+requires = ["uv_build>=0.11.6,<0.12.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3",
+    "ruff>=0.9",
+    "ty>=0.0.1a1",
+    "types-regex>=2026.9.3.20260903",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "UP", "B", "SIM", "RUF"]
+ignore = ["RUF001", "RUF002", "RUF003"]
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q --strict-markers"

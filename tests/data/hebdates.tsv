@@ -1,0 +1,36 @@
+input	expected	config	note
+# Hebrew-calendar dates. The month is required: a bare "כ״ז" is indistinguishable from
+# a gershayim acronym, and the abbreviations rule has the better claim on it.
+כ״ז אלול	עשרים ושבעה באלול		month without the preposition
+כ״ז באלול	עשרים ושבעה באלול		month with it
+א׳ בתשרי	אחד בתשרי		single letter + geresh — was read "אלף בתשרי" before this rule
+ב׳ בתשרי	שניים בתשרי		
+ט׳ באב	תשעה באב		the cardinal already is the name
+י׳ בטבת	עשרה בטבת		
+י״א בניסן	אחד עשר בניסן		
+י״ד בתשרי	ארבעה עשר בתשרי		
+ט״ז בסיוון	שישה עשר בסיוון		ט״ז avoids spelling the Name
+י״ז בתמוז	שבעה עשר בתמוז		
+כ׳ באייר	עשרים באייר		
+כ״ז בכסלו	עשרים ושבעה בכסלו		
+כ״ט באלול	עשרים ותשעה באלול		
+ל׳ בחשוון	שלושים בחשוון		last possible day
+# Defective spellings that turn up in real text
+כ״ז בחשון	עשרים ושבעה בחשוון		חשון -> חשוון
+כ״ז בכסליו	עשרים ושבעה בכסלו		
+כ״ז בסיון	עשרים ושבעה בסיוון		
+# Lexicalised names: the date is a word, not a reading
+ט״ו בשבט	טו בשבט		/tu bishvat/, not חמישה עשר בשבט
+ט״ו באב	טו באב		
+ל״ג בעומר	לג בעומר		the Omer counts days but is not a month
+# Years are said as words
+י״ד בתשרי תשפ״ו	ארבעה עשר בתשרי תשפו		
+א׳ בניסן ה׳תשפ״ו	אחד בניסן התשפו		with the millennium
+# Inside a sentence
+החג חל ב-כ״ז באלול השנה	החג חל ב-עשרים ושבעה באלול השנה		
+נולדתי ט״ז בשבט	נולדתי שישה עשר בשבט		ט״ז is not the ט״ו holiday
+# Left alone: acronyms and holiday names are not dates
+צה״ל	צהל		read-as-word acronym, untouched by this rule
+ד״ר כהן	דוקטור כהן		abbreviation, untouched
+ראש השנה	ראש השנה		a holiday name is already words
+יום כיפור	יום כיפור		

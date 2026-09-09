@@ -1,0 +1,50 @@
+input	expected	config	note
+# Text the normalizer must hand back untouched. A false positive here is worse than a
+# missed conversion: it corrupts text that was already correct.
+# --- plain Hebrew, nothing to normalize ---
+שלום עולם	שלום עולם		
+הילד הלך לבית הספר בבוקר	הילד הלך לבית הספר בבוקר		
+מה שלומך? הכל בסדר, תודה!	מה שלומך? הכל בסדר, תודה!		punctuation kept for prosody
+אמרתי לו: "בוא נלך", והוא הסכים	אמרתי לו: "בוא נלך", והוא הסכים		quotes around a phrase are not gershayim
+הוא אמר שזה יהיה בסדר; אני לא בטוח	הוא אמר שזה יהיה בסדר; אני לא בטוח		
+אולי... אולי לא	אולי... אולי לא		ellipsis kept
+# --- URLs: contain dates, times and numbers that must NOT be read ---
+https://example.com/12/03/2026	https://example.com/12/03/2026		a valid date inside a URL
+https://example.com/article?id=25	https://example.com/article?id=25		
+http://gov.il/page/14:30	http://gov.il/page/14:30		a valid time inside a URL
+www.example.com/50-1234567	www.example.com/50-1234567		phone-shaped digits inside a URL
+בקרו באתר https://example.co.il/2026 לפרטים	בקרו באתר https://example.co.il/2026 לפרטים		URL inside Hebrew
+ראו כאן: www.example.com.	ראו כאן: www.example.com.		trailing full stop stays outside the URL
+https://github.com/thewh1teagle/vibe	https://github.com/thewh1teagle/vibe		
+# --- emails ---
+user@example.com	user@example.com		
+yaakov725@gmail.com	yaakov725@gmail.com		digits inside the local part
+שלחו ל-info@example.co.il	שלחו ל-info@example.co.il		
+# --- filenames ---
+הקובץ report.pdf מצורף	הקובץ report.pdf מצורף		
+פתח את main.py ותקן	פתח את main.py ותקן		
+הורדתי את song.mp3	הורדתי את song.mp3		
+ראו data_2026.csv	ראו data_2026.csv		a year inside a filename
+# --- handles and hashtags ---
+#חדשות	#חדשות		
+@thewh1teagle	@thewh1teagle		
+עקבו אחרי @user123 ברשת	עקבו אחרי @user123 ברשת		
+# --- Latin words fused to digits: a name, not a quantity ---
+המודל GPT-4 יצא	המודל GPT-4 יצא		
+בזמן COVID-19	בזמן COVID-19		
+קניתי iPhone15	קניתי iPhone15		
+גרסה v2 שוחררה	גרסה v2 שוחררה		
+קובץ MP3 באיכות גבוהה	קובץ MP3 באיכות גבוהה		
+# --- English, no digits: nothing for any rule to claim ---
+Hello world	Hello world		
+This is a plain English sentence.	This is a plain English sentence.		
+I don't think so	I don't think so		apostrophe must not become a geresh
+He said "hello" to me	He said "hello" to me		ASCII quotes stay ASCII in Latin text
+Claude Code	Claude Code		
+# --- mixed Hebrew and Latin, no digits ---
+השתמשתי ב-Python כדי לכתוב את זה	השתמשתי ב-Python כדי לכתוב את זה		
+הורדתי את Vibe מהאתר	הורדתי את Vibe מהאתר		
+# --- Hebrew punctuation that resembles our markers ---
+זה עולה הרבה כסף	זה עולה הרבה כסף		
+המקף־העברי נשמר	המקף־העברי נשמר		maqaf is not a range
+שאלה - ותשובה	שאלה - ותשובה		a dash between words is not a range

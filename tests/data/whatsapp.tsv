@@ -1,0 +1,32 @@
+# Casual messages: times, phone numbers, markdown emphasis, emoji, mixed scripts.
+input	expected	config	note
+מגיע ב-8 בערב	מגיע בשמונה בערב		bare hour written as a plain number
+תתקשר אליי ל-050-1234567	תתקשר אליי לאפס חמש אפס אחת שתיים שלוש ארבע חמש שש שבע		mobile number after a prefix
+נפגשים ב-19:30 ליד הקניון	נפגשים בשבע וחצי בערב ליד הקניון		
+אני *ממש* עייף היום	אני ממש עייף היום		markdown emphasis dropped, text kept
+קניתי 3 בקבוקים ב-20 ₪	קניתי שלושה בקבוקים בעשרים שקלים		count + price in one message
+יאללה נדבר מחר בבוקר 😊	יאללה נדבר מחר בבוקר 😊		nothing to normalize, emoji survives
+הטיסה ב-14:30 מתל אביב	הטיסה בשתיים וחצי אחר הצהריים מתל אביב		afternoon half hour
+יש לי 2 כרטיסים למופע	יש לי שני כרטיסים למופע		2 before a masc plural is שני
+אני בדרך, עוד 10 דקות	אני בדרך, עוד עשר דקות		דקות is feminine
+שלח לי את הקובץ במייל	שלח לי את הקובץ במייל		plain message, unchanged
+המשלוח יגיע ביום שלישי ב-11:00	המשלוח יגיע ביום שלישי באחת עשרה בבוקר		יום שלישי must not be read as a number
+אני צריך 1.5 ק״ג עגבניות	אני צריך אחת נקודה חמש קילוגרם עגבניות		a decimal keeps the singular unit
+תודה!! היה מעולה	תודה!! היה מעולה		doubled punctuation is left alone
+המחיר 89.90 ₪ כולל משלוח	המחיר שמונים ותשעה שקלים ותשעים אגורות כולל משלוח		agorot are read
+נשארו 5 מקומות בלבד	נשארו חמישה מקומות בלבד		
+אני מגיע ב-7:15 מחר	אני מגיע בשבע ורבע בבוקר מחר		quarter past
+הכתובת היא הרצל 25 תל אביב	הכתובת היא הרצל עשרים וחמש תל אביב		house number stays a bare cardinal
+תעדכן אותי עד 12:00 בצהריים	תעדכן אותי עד שתים עשרה בצהריים		noon
+יש הנחה של 20% על הכל 🔥	יש הנחה של עשרים אחוזים על הכל 🔥		percent next to an emoji
+מתי אתה חוזר? ב-3 או ב-4?	מתי אתה חוזר? בשלוש או בארבע?		two prefixed numbers, question marks kept
+התור שלי ב-9/3/2026 בשעה 16:00	התור שלי בתשעה במרץ אלפיים עשרים ושש בשעה ארבע אחר הצהריים		date immediately followed by a time
+אני _בבית_ עכשיו	אני בבית עכשיו		underscore emphasis
+שלח 052-9876543 בבקשה	שלח אפס חמש שתיים תשע שמונה שבע שש חמש ארבע שלוש בבקשה		
+עברתי 12 ק״מ היום 💪	עברתי שנים עשר קילומטרים היום 💪		unit + emoji
+הפגישה נדחתה ל-10:45	הפגישה נדחתה לרבע לאחת עשרה בבוקר		quarter to
+צריך להביא 2 ילדים ו-3 מבוגרים	צריך להביא שני ילדים ושלושה מבוגרים		ו- prefix loses its hyphen
+ההזמנה מס׳ 4471 אושרה	ההזמנה מספר ארבעת אלפים ארבע מאות שבעים ואחת אושרה		geresh abbreviation + four-digit id
+אני מגיע מחר ב-20:00	אני מגיע מחר בשמונה בערב		
+כבר 3 ימים שאני חולה 😷	כבר שלושה ימים שאני חולה 😷		
+אפשר להתקשר ל-03-6543210?	אפשר להתקשר לאפס שלוש שש חמש ארבע שלוש שתיים אחת אפס?		landline with a 2-digit area code

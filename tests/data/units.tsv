@@ -1,0 +1,106 @@
+input	expected	config	note
+1 ק״מ	קילומטר אחד		1 follows its noun
+2 ק״מ	שני קילומטרים		2 takes the construct שני
+3 ק״מ	שלושה קילומטרים		masc plural
+11 ק״מ	אחד עשר קילומטרים		teens, masc
+2.5 ק״מ	שתיים נקודה חמש קילומטר		decimal keeps the singular
+20 ק״מ	עשרים קילומטרים		round tens
+100 ק״מ	מאה קילומטרים		hundreds
+1000 ק״מ	אלף קילומטרים		thousands
+0 ק״מ	אפס קילומטרים		zero takes the plural
+5 קילומטר	חמישה קילומטרים		spelled-out singular form
+5 קילומטרים	חמישה קילומטרים		spelled-out plural form
+5 km	חמישה קילומטרים		Latin symbol
+1 מ׳	מטר אחד		metre, geresh abbreviation
+3 מ׳	שלושה מטרים		metres
+7 מטר	שבעה מטרים		metre spelled out
+12 מ״מ	שנים עשר מילימטרים		millimetres
+1 מ״מ	מילימטר אחד		one millimetre
+2 ס״מ	שני סנטימטרים		two centimetres, construct
+30 ס״מ	שלושים סנטימטרים		centimetres
+1.8 מ׳	אחת נקודה שמונה מטר		height, decimal singular
+1 ק״ג	קילוגרם אחד		one kilogram
+2 ק״ג	שני קילוגרמים		two kilograms
+3 ק״ג	שלושה קילוגרמים		three kilograms
+11 ק״ג	אחד עשר קילוגרמים		eleven kilograms
+2.5 ק״ג	שתיים נקודה חמש קילוגרם		decimal weight, singular noun
+500 גרם	חמש מאות גרמים		grams
+1 גרם	גרם אחד		one gram
+2 ג׳	שני גרמים		grams, geresh abbreviation
+250 מ״ג	מאתיים וחמישים מיליגרמים		milligrams
+1 מ״ג	מיליגרם אחד		one milligram
+3 קילו	שלושה קילו		קילו is invariant
+1 קילו	קילו אחד		one kilo
+2 קילו	שני קילו		two kilo, construct
+4 טון	ארבעה טונות		tonnes, plural טונות
+1 טון	טון אחד		one tonne
+1.5 ק״ג	אחת נקודה חמש קילוגרם		kilo and a half
+0.5 ליטר	אפס נקודה חמש ליטר		half a litre
+1 ליטר	ליטר אחד		one litre
+2 ליטר	שני ליטרים		two litres
+6 ליטר	שישה ליטרים		litres
+1.5 ליטר	אחת נקודה חמש ליטר		bottle size, decimal
+500 מ״ל	חמש מאות מיליליטרים		millilitres
+1 מ״ל	מיליליטר אחד		one millilitre
+11 מ״ל	אחד עשר מיליליטרים		eleven millilitres
+3 קוב	שלושה קוב		cubic metres, invariant
+2 מ״ק	שני מטרים מעוקבים		cubic metre abbreviation
+1 שנייה	שנייה אחת		fem, 1 follows its noun
+2 שניות	שתי שניות		fem construct שתי
+3 שניות	שלוש שניות		fem plural, bare numeral
+11 שניות	אחת עשרה שניות		fem teens
+30 שניות	שלושים שניות		round tens, fem
+1 דקה	דקה אחת		one minute
+2 דקות	שתי דקות		two minutes
+3 דקות	שלוש דקות		three minutes, fem — contrast with שלושה
+45 דקות	ארבעים וחמש דקות		minutes
+2.5 דקות	שתיים נקודה חמש דקה		decimal minutes take the singular
+1 שעה	שעה אחת		one hour
+2 שעות	שתי שעות		two hours
+11 שעות	אחת עשרה שעות		eleven hours
+24 שעות	עשרים וארבע שעות		a day in hours
+1 יום	יום אחד		masc, one day
+2 ימים	שני ימים		two days, construct
+3 ימים	שלושה ימים		three days, masc
+11 ימים	אחד עשר ימים		eleven days
+2 שבועות	שני שבועות		two weeks
+6 שבועות	שישה שבועות		weeks
+1 חודש	חודש אחד		one month
+3 חודשים	שלושה חודשים		months, masc
+18 חודשים	שמונה עשר חודשים		eighteen months
+1 שנה	שנה אחת		one year, fem
+2 שנים	שתי שנים		two years, fem construct
+3 שנים	שלוש שנים		three years — fem, unlike חודשים
+11 שנים	אחת עשרה שנים		eleven years
+1 ק״ב	קילובייט אחד		one kilobyte
+512 ק״ב	חמש מאות ושנים עשר קילובייטים		kilobytes
+2 מ״ב	שני מגהבייטים		two megabytes
+64 מ״ב	שישים וארבעה מגהבייטים		megabytes
+3 ג״ב	שלושה גיגהבייטים		gigabytes
+1 ג״ב	גיגהבייט אחד		one gigabyte
+2 ט״ב	שני טרהבייטים		two terabytes
+16 GB	שישה עשר גיגהבייטים		Latin data symbol
+90 קמ״ש	תשעים קילומטרים לשעה		speed limit
+2 קמ״ש	שני קילומטרים לשעה		two km/h, construct
+25°C	עשרים וחמש מעלות צלזיוס		degree sign with a scale
+25°	עשרים וחמש מעלות		bare degree sign
+1°	מעלה אחת		one degree, fem
+2°	שתי מעלות		two degrees, construct
+38.5°	שלושים ושמונה נקודה חמש מעלות		fever — degrees stay plural after a decimal
+100°C	מאה מעלות צלזיוס		boiling point
+-5°C	מינוס חמש מעלות צלזיוס		minus sign claimed here, so °C is not stranded
+451°F	ארבע מאות חמישים ואחת מעלות פרנהייט		Fahrenheit
+1 מ״ר	מטר רבוע אחד		one square metre
+2 מ״ר	שני מטרים רבועים		two square metres
+120 מ״ר	מאה ועשרים מטרים רבועים		apartment size
+1 דונם	דונם אחד		one dunam
+3 דונם	שלושה דונמים		dunams
+2 ק״ר	שני קילומטרים רבועים		square kilometres
+הלכתי 3 ק״מ ברגל	הלכתי שלושה קילומטרים ברגל		unit mid-sentence
+המרחק הוא 12 ק״מ.	המרחק הוא שנים עשר קילומטרים.		sentence-final punctuation survives
+3 ק״מ	שלוש ק״מ	expand_units=false	opt-out: the unit is left alone, the bare digits still get read
+2.5 ק״ג	שתיים נקודה חמש ק״ג	expand_units=false	opt-out, decimal
+45 דקות	ארבעים וחמש דקות	expand_units=false	opt-out, feminine unit
+25°C	עשרים וחמש מעלות צלזיוס	expand_units=false	the degree sign expands regardless — ° is not a word
+5 קילומטרון	חמש קילומטרון		unit must not match inside a longer word
+3 ג׳ירפות	שלוש ג׳ירפות		ג׳ before a letter is not grams

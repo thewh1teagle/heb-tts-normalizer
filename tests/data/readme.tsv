@@ -1,0 +1,33 @@
+input	expected	config	note
+# Every example that appears in README.md, docs/design.md or examples/. Documentation
+# that is not executed rots; this file is why these stay true.
+יש לי 3 ילדים, והכרטיס עלה ₪25 ב-12/03/2026 בשעה 14:30	יש לי שלושה ילדים, והכרטיס עלה עשרים וחמישה שקלים בשנים עשר במרץ אלפיים עשרים ושש בשעה שתיים וחצי אחר הצהריים		README headline
+יש לי 3 ילדים ו-25₪	יש לי שלושה ילדים ועשרים וחמישה שקלים		normalize() docstring
+3 ילדים	שלושה ילדים		
+3 ילדות	שלוש ילדות		
+המחיר 25.50 ₪	המחיר עשרים וחמישה שקלים וחמישים אגורות		
+₪25	עשרים וחמישה שקלים		
+12%	שנים עשר אחוזים		
+3.5	שלוש נקודה חמש		
+12/03/2026	שנים עשר במרץ אלפיים עשרים ושש		
+14:30	שתיים וחצי אחר הצהריים		
+14:30	ארבע עשרה שלושים	clock=24	
+5 ק״מ	חמישה קילומטרים		
+3–5	שלוש עד חמש		
+-5	מינוס חמש		
+03-1234567	אפס שלוש אחת שתיים שלוש ארבע חמש שש שבע		
+ד״ר	דוקטור		
+מס׳	מספר		
+32/13/2026	32/13/2026		an impossible date is left alone, not guessed at
+3–5 ק״מ	שלושה עד חמישה קילומטרים		RANGE outranks UNIT: one span, not a stranded unit
+61 חברי כנסת	שישים ואחד חברי כנסת		construct plural ־י
+2 מיליון	שני מיליון		a scale word is countable though singular
+כביש 6 סמוך לצומת	כביש שש סמוך לצומת		a label, not a count
+מספר הנוסעים גדל פי 3	מספר הנוסעים גדל פי שלושה		פי is a fixed masculine idiom
+3 הילדים	שלושת הילדים		definite masculine binds
+3 הילדות	שלוש הילדות		definite feminine does not
+1 ילד	ילד אחד		1 follows its noun
+3 נשים	שלוש נשים		feminine despite ־ים
+4 מקומות	ארבעה מקומות		masculine despite ־ות
+3 כנפיים	שלוש כנפיים		feminine dual
+המחיר עלה ל-₪25.50	המחיר עלה לעשרים וחמישה שקלים וחמישים אגורות		prefix binds across the currency symbol
