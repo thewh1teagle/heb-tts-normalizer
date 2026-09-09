@@ -1,6 +1,6 @@
 [project]
 name = "heb-tts-normalizer"
-version = "0.1.0"
+version = "0.2.0"
 description = "Normalize Hebrew text for TTS: numbers, currency, dates, times and units become spoken words, ready for g2p."
 readme = "README.md"
 requires-python = ">=3.9"
