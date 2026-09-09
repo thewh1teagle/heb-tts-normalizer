@@ -67,7 +67,17 @@ const INTEGER: &str = r"(?P<num>\d{1,3}(?:,\d{3})+|\d+)";
 /// Never start mid-number, and never read one limb of a date or a time. If the dates
 /// rule declined `32/13/2026` it is malformed, not three numbers, so these guards keep
 /// the whole thing in digits rather than reading half of it aloud.
-const BEFORE: &str = r"(?<!\d)(?<![:/])";
+/// The last clause refuses a lone thousands group. In the map scale `1:250,000` the
+/// `250` is declined for its colon, and the scan then restarts at `000` — which on its
+/// own is a perfectly good number, so the scale came out as `1:250,אפס`, half words and
+/// half digits.
+///
+/// It looks only at the comma and at the digits themselves, never at the text on either
+/// side. Anything else — the digit before the comma, the punctuation after the group —
+/// is something an earlier rule or `finalize` may already have rewritten, and the same
+/// input would then read differently on a second pass. Only an exact three-digit group
+/// is refused, so the comma decimal `1,5` still reads אחת,חמש.
+const BEFORE: &str = r"(?<!\d)(?<![:/])(?!(?<=,)\d{3}(?!\d))";
 const AFTER: &str = r"(?!\d)(?![:/]\d)";
 
 /// Plural morphology. A counted Hebrew noun is almost always plural ("שלושה ילדים"),
@@ -294,9 +304,13 @@ impl PrefixRule {
     fn new() -> Self {
         // Two-letter prefixes ("וב-", "מל-") are allowed; anything ending in ה is not,
         // so "מה-3" still reaches the ordinal rule as "מ" + "ה-3".
+        //
+        // `של` is spelled out of it. It is the one real word the two-letter class can
+        // make, and swallowing its hyphen turns `של-18 מעלות` into `שלשמונה עשרה` — a
+        // word that does not exist, with the minus sign gone.
         Self {
             pattern: Regex::new(&format!(
-                r"(?<![{LETTER}])(?P<pre>[בוכלמש]{{1,2}})[{HYPHEN}](?=[\d₪$€£])"
+                r"(?<![{LETTER}])(?P<pre>[בוכלמש]{{1,2}})(?<!של)[{HYPHEN}](?=[\d₪$€£])"
             ))
             .expect("prefix pattern"),
         }

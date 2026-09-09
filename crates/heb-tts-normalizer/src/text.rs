@@ -43,29 +43,39 @@ static ASCII_GERSHAYIM: Lazy<Regex> =
 static ASCII_GERESH: Lazy<Regex> =
     Lazy::new(|| Regex::new(&format!(r"(?<=[{HEB}])'(?![{HEB}])")).expect("ASCII_GERESH"));
 
+/// ASCII `"` and `'` used as Hebrew punctuation, given their Hebrew shapes.
+fn canonical_quotes(text: &str) -> String {
+    let s = ASCII_GERSHAYIM.replace_all(text, GERSHAYIM.to_string());
+    ASCII_GERESH
+        .replace_all(&s, GERESH.to_string())
+        .into_owned()
+}
+
 /// Prepare raw text for the scan: strip invisibles, unify quotes, drop Markdown.
 pub fn clean(text: &str, cfg: &Config) -> String {
     let mut s: String = text.nfc().collect();
     s = INVISIBLE.replace_all(&s, "").into_owned();
     s = ODD_SPACE.replace_all(&s, " ").into_owned();
-    s = ASCII_GERSHAYIM
-        .replace_all(&s, GERSHAYIM.to_string())
-        .into_owned();
-    s = ASCII_GERESH
-        .replace_all(&s, GERESH.to_string())
-        .into_owned();
+    s = canonical_quotes(&s);
     if cfg.strip_markdown {
         s = crate::rules::cleanup::strip_markdown(&s);
     }
     s
 }
 
-/// Tidy the spacing the rules left behind.
+/// Tidy up after the rules: quote shapes first, then the spacing they left behind.
+///
+/// The quotes are done twice — once here and once in [`clean`] — because a rule turns
+/// digits into Hebrew words, and that can put an ASCII quote next to a Hebrew letter
+/// that was not next to one before the scan: `74'` comes out as `שבעים וארבע'`. Without
+/// this pass the shape would change on a *second* call to `normalize`, and idempotence
+/// is a promise this library makes.
 pub fn finalize(text: &str, cfg: &Config) -> String {
+    let text = canonical_quotes(text);
     if !cfg.clean_whitespace {
-        return text.to_string();
+        return text;
     }
-    let mut s = WHITESPACE.replace_all(text, " ").into_owned();
+    let mut s = WHITESPACE.replace_all(&text, " ").into_owned();
     s = SPACE_BEFORE_PUNCT.replace_all(&s, "$1").into_owned();
     s = BLANK_LINES.replace_all(&s, "\n\n").into_owned();
     s.lines()

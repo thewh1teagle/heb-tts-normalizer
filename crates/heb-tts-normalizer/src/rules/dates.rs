@@ -493,7 +493,19 @@ impl Rule for HebrewDateRule {
         &self.re
     }
 
-    fn render(&self, m: &Captures<'_>, _text: &str, cfg: &Config) -> Option<String> {
+    fn render(&self, m: &Captures<'_>, text: &str, cfg: &Config) -> Option<String> {
+        let whole = m.get(0)?;
+        // This rule reading its own output. With `hebrew_date_style=letters`, `כ״ט באב`
+        // comes out as `כ׳ ט׳ באב`, and the `ט׳ באב` inside that is a perfectly good
+        // date on its own — it is even a holiday, so a second pass would turn it into
+        // תשעה באב. A day that follows another gematria token is not a day: claim the
+        // span so nothing else grabs it, and hand it straight back.
+        if text[..whole.start()]
+            .trim_end_matches(' ')
+            .ends_with(['׳', '״'])
+        {
+            return Some(whole.as_str().to_string());
+        }
         let raw_day = m.name("day")?.as_str();
         let day = gematria(raw_day);
         let month = hebrew_month_canonical(m.name("month")?.as_str());

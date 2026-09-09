@@ -160,6 +160,44 @@ verified independently of any Hebrew — including the multi-byte cases that onl
 Rust: a decline must advance a whole character rather than a byte, and the skip-ahead must
 land on a char boundary.
 
+### Text nobody wrote for us
+
+Every TSV row was written by whoever wrote the rules, which is the wrong provenance for
+finding blind spots: a case nobody thought of never gets a row, and the tests agree with
+the code because they came from the same head. So `tests/data/soak/` holds a few
+thousand real Hebrew sentences mined from [OPUS](https://opus.nlpl.eu/) — subtitles,
+Wikipedia, lecture transcripts, Tatoeba — by `scripts/mine_opus.py`, sampled stratified
+by trigger type so a Hebrew-calendar date or a per-mille sign is not drowned by plain
+integers. Corpus choice is constrained by licence as much as by content: the sample is
+committed inside a crate published under MIT, so a non-commercial corpus stays out of it
+however good its numbers are.
+
+None of it is reviewed, so none of it says what the right answer is. `tests/soak.rs`
+asserts only what must hold whatever the right answer is: `normalize` returns rather
+than panicking, it is idempotent, it invents no niqqud, prose with no trigger in it goes
+through the scan untouched, and the output is properly finalized. That needs no expected
+values, so it scales to as much text as we care to run — and it is where a real crash or
+a mangled sentence turns up.
+
+Two numbers are measured rather than asserted, because neither is wrong by itself:
+how often a digit survives into the output, and how often a sentence with a trigger comes
+back unchanged. `32/13/2026` is not a date and a catalogue number is not a quantity, so
+both are legitimately non-zero. They are pinned as budgets that may only go down;
+`chore soak-report` prints the sentences behind them, which is where the next golden TSV
+row comes from.
+
+`tests/data/opus.tsv` is where those sentences end up once somebody has decided what they
+should sound like. Each row started in the soak sample and was read by two independent
+reviewers; where they disagreed the sentence stayed out, on the grounds that a row nobody
+is sure about is worse than no row. These are ordinary corpus rows and run with the rest,
+so a rule change that alters a real sentence fails by name instead of moving a percentage.
+
+Real text is full of numbers that are not quantities, so a row there can legitimately
+keep a digit — an unread fraction, an impossible date, a track length. Such a row says so
+in its `note`, which starts `keeps-digit:` and gives the reason. The reason sits beside
+the row rather than in a table keyed by line number, which would point at the wrong row
+the moment anyone inserted a line.
+
 ## Adding a rule
 
 Add a module under `src/rules/` with the pattern, its lexicon, and nothing else; expose

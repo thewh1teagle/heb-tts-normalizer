@@ -16,12 +16,37 @@ task build {
     cargo build --workspace --release
 }
 
-# Run the Rust tests: the TSV corpus and the scanner machinery.
+# Run the Rust tests: the TSV corpus, the scanner machinery and the soak sample.
 #
 # The corpus is the spec — every TSV row through the public normalize(), plus
-# idempotence, no-digits and no-niqqud on every one of them.
+# idempotence, no-digits and no-niqqud on every one of them. The soak test runs the
+# same normalize() over thousands of real OPUS sentences that carry no expected output,
+# asserting only what must hold regardless: no panic, idempotent, no niqqud invented,
+# untouched prose stays untouched.
 task test {
     cargo test --workspace
+}
+
+# Re-mine the OPUS soak sample under tests/data/soak.
+#
+# Downloads a few hundred MB into the gitignored build/opus, keeps the sentences that
+# carry something this library reads, and writes a deduplicated sample stratified by
+# trigger type, plus a manifest recording each source's hash. Only the sample is
+# committed. Takes a few minutes, and is only needed when the sample should change.
+task mine {
+    uv run "$ROOT/scripts/mine_opus.py"
+}
+
+# Check the committed soak sample against the sources it claims to come from.
+task mine-verify {
+    uv run "$ROOT/scripts/mine_opus.py" --verify
+}
+
+# What the rules do to real text: per-category coverage, plus every sentence that
+# carried a trigger and came back unchanged. Read this when picking cases to promote
+# into a golden TSV row.
+task soak-report {
+    cargo test -p heb-tts-normalizer --test soak -- --ignored --nocapture
 }
 
 # Format the Rust sources in place.

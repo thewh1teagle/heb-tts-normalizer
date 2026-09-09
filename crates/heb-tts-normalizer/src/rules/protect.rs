@@ -33,7 +33,11 @@ const HANDLE: &str = r"[#@][A-Za-z0-9_\u{0590}-\u{05FF}]+";
 /// A Latin word fused to digits: GPT-4, COVID-19, iPhone15, v2, MP3. The digits are
 /// part of a name, not a quantity, so reading them in Hebrew would be wrong. Note the
 /// digits must touch the letters — "5 km" is a measurement and belongs to the units rule.
-const ALPHANUM: &str = r"\b[A-Za-z]+-?\d+[A-Za-z0-9]*\b";
+///
+/// The trailing group matters: a designation like `Tu-16K-10-26` has to be claimed
+/// whole. Claiming only `Tu-16K` leaves `-10-26` behind, and the number rule then reads
+/// it as minus ten — inside an aircraft's name.
+const ALPHANUM: &str = r"\b[A-Za-z]+-?\d+[A-Za-z0-9]*(?:-[A-Za-z0-9]+)*\b";
 
 /// Match it, then give it straight back.
 struct ProtectRule {
