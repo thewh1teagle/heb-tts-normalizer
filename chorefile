@@ -1,7 +1,8 @@
 require 1.9.0
 
-# Registry tokens for the publish tasks. Optional, so every other task works without it;
-# gitignored, because it holds secrets. See .env.local.example.
+# Registry tokens for the publish tasks: CARGO_REGISTRY_TOKEN, PYPI_TOKEN and
+# NODE_AUTH_TOKEN. Optional, so every other task works without it; gitignored, because
+# it holds secrets.
 dotenv .env.local optional
 
 repo=thewh1teagle/heb-tts-normalizer
@@ -117,7 +118,7 @@ task bundle version {
 # lockstep forever, for a name nobody installs.
 task publish-crates {
     if !env CARGO_REGISTRY_TOKEN {
-        fail "CARGO_REGISTRY_TOKEN is not set — put it in .env.local (see .env.local.example)"
+        fail "CARGO_REGISTRY_TOKEN is not set — put it in .env.local"
     }
     cargo publish -p heb-tts-normalizer
 }
@@ -125,7 +126,7 @@ task publish-crates {
 # Upload the wheels `bundle` left in dist/ to PyPI.
 task publish-pypi {
     if !env PYPI_TOKEN {
-        fail "PYPI_TOKEN is not set — put it in .env.local (see .env.local.example)"
+        fail "PYPI_TOKEN is not set — put it in .env.local"
     }
     if !exists "$ROOT/dist" {
         fail "no dist/ — run: chore bundle <version>"
@@ -139,7 +140,7 @@ task publish-pypi {
 # Publish the npm package, wasm included.
 task publish-npm {
     if !env NODE_AUTH_TOKEN {
-        fail "NODE_AUTH_TOKEN is not set — put it in .env.local (see .env.local.example)"
+        fail "NODE_AUTH_TOKEN is not set — put it in .env.local"
     }
     # The wasm lives in gitignored pkg/ dirs that only exist after `bundle`, so this
     # must run from a bundled tree rather than a fresh clone.
