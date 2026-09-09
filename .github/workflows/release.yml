@@ -111,11 +111,17 @@ jobs:
           do
             if [ -f "$src/$f" ]; then cp "$src/$f" "stage/$name/"; fi
           done
+          # The header goes in the tarball, not just in the repo: a C consumer who
+          # downloads a release has everything needed to compile against it, without
+          # having to find a matching checkout for the declarations.
+          cp crates/heb-tts-normalizer-c/include/heb_tts_normalizer.h "stage/$name/"
           cp LICENSE README.md "stage/$name/"
           # A cdylib is the whole point; a build that produced none is a failure, not
           # an empty tarball someone discovers at install time.
           ls "stage/$name" | grep -Eq '\.(so|dylib|dll)$' \
             || { echo "no shared library in $src"; ls -la "$src"; exit 1; }
+          test -f "stage/$name/heb_tts_normalizer.h" \
+            || { echo "no header in stage/$name"; exit 1; }
           tar -C stage -czf "$name.tar.gz" "$name"
           ls -la "$name.tar.gz"
 
