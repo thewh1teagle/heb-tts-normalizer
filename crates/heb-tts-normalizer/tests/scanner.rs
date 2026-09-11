@@ -448,3 +448,44 @@ fn a_match_ending_at_the_last_byte_is_fine() {
     assert_eq!(scan("המחיר 25", &rs, &cfg()), "המחיר סוף");
     assert_eq!(scan("25", &rs, &cfg()), "סוף");
 }
+
+// Markup is carried through, not read aloud.
+//
+// A TTS pipeline hands this library text that still has engine markup in it. The
+// digits inside a tag belong to the markup, so a rule must never be offered them.
+
+#[test]
+fn a_tag_is_copied_across_untouched() {
+    let cfg = Config::default();
+    assert_eq!(
+        heb_tts_normalizer::normalize("<break time=\"300ms\"/> 5 דונם", &cfg),
+        "<break time=\"300ms\"/> חמישה דונמים"
+    );
+}
+
+#[test]
+fn text_between_tags_is_still_normalized() {
+    let cfg = Config::default();
+    assert_eq!(
+        heb_tts_normalizer::normalize("<p>יש לי 3 ילדים</p>", &cfg),
+        "<p>יש לי שלושה ילדים</p>"
+    );
+}
+
+#[test]
+fn a_comparison_is_not_a_tag() {
+    let cfg = Config::default();
+    assert_eq!(
+        heb_tts_normalizer::normalize("3 < 5", &cfg),
+        "שלוש < חמש"
+    );
+}
+
+#[test]
+fn a_tag_does_not_hide_the_text_after_it() {
+    let cfg = Config::default();
+    assert_eq!(
+        heb_tts_normalizer::normalize("<phoneme ph=\"a\"/>7 ילדים", &cfg),
+        "<phoneme ph=\"a\"/>שבעה ילדים"
+    );
+}

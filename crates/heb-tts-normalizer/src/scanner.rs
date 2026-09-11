@@ -5,9 +5,20 @@
 //! once, and never looked at again.
 
 use fancy_regex::{Captures, Regex};
+use once_cell::sync::Lazy;
 
 use crate::config::Config;
 use crate::text::{clean, finalize};
+
+/// An SSML or HTML tag, anchored at the current position.
+///
+/// Text on its way to a g2p often carries markup the engine reads itself, and the
+/// digits inside a tag are part of that markup rather than something to say out
+/// loud: `<break time="300ms"/>` must not become `<break time="שלוש מאותms"/>`.
+/// Requiring a name character after `<` keeps an ordinary comparison such as
+/// `3 < 5` from being mistaken for a tag.
+static MARKUP: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r"^<[A-Za-z/!?][^<>]*>").expect("MARKUP"));
 
 /// A span matcher. Every rule module exports its rules into the registry.
 pub trait Rule: Send + Sync {
@@ -110,6 +121,14 @@ pub fn scan(text: &str, rules: &[Box<dyn Rule>], cfg: &Config) -> String {
     }
 
     while pos < text.len() {
+        // A tag is markup, not speech. Copy it across untouched before any rule is
+        // offered the chance to read the digits inside it.
+        if let Ok(Some(tag)) = MARKUP.find(&text[pos..]) {
+            out.push_str(tag.as_str());
+            pos += tag.end();
+            continue;
+        }
+
         // Candidates that begin exactly here, best first. Within one priority the
         // longest match wins, which is why this collects before rendering.
         let mut here: Vec<(usize, i32, &dyn Rule, &Captures<'_>)> = Vec::new();
